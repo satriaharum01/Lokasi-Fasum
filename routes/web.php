@@ -47,10 +47,7 @@ Route::prefix('account')->group(function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/pengguna', [App\Http\Controllers\AdminPenggunaController::class, 'index'])->name('pengguna');
-    Route::get('/resources', [App\Http\Controllers\AdminSumberDayaController::class, 'index'])->name('resources');
-    Route::get('/stoking', [App\Http\Controllers\AdminStokingController::class, 'index'])->name('stoking');
-    Route::get('/prediksi', [App\Http\Controllers\AdminPrediksiController::class, 'index'])->name('prediksi');
-    Route::get('/laporan', [App\Http\Controllers\AdminLaporanController::class, 'index'])->name('laporan');
+    Route::get('/fasilitas', [App\Http\Controllers\AdminFasumController::class, 'index'])->name('fasum');
     Route::get('/profile', [App\Http\Controllers\AdminProfileController::class, 'index'])->name('profile');
 
     Route::prefix('profile')->name('profile.')->group(function () {
@@ -59,8 +56,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('/json', [App\Http\Controllers\AdminDashboardController::class, 'json']);
-        Route::get('/barChart', [App\Http\Controllers\AdminDashboardController::class, 'barChart']);
-        Route::get('/testpage', [App\Http\Controllers\AdminDashboardController::class, 'getCalculate']);
     });
 
     Route::prefix('pengguna')->name('pengguna.')->group(function () {
@@ -71,94 +66,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::GET('/delete/{id}', [App\Http\Controllers\AdminPenggunaController::class, 'destroy']);
         Route::get('/json', [App\Http\Controllers\AdminPenggunaController::class, 'json']);
         Route::get('/find/{id}', [App\Http\Controllers\AdminPenggunaController::class, 'find']);
-    });
-
-    Route::prefix('resources')->name('resources.')->group(function () {
-        Route::get('/tambah', [App\Http\Controllers\AdminSumberDayaController::class, 'new'])->name('new');
-        Route::get('/edit/{id}', [App\Http\Controllers\AdminSumberDayaController::class, 'edit'])->name('edit');
-        Route::POST('/save', [App\Http\Controllers\AdminSumberDayaController::class, 'store']);
-        Route::POST('/update/{id}', [App\Http\Controllers\AdminSumberDayaController::class, 'update']);
-        Route::GET('/delete/{id}', [App\Http\Controllers\AdminSumberDayaController::class, 'destroy']);
-        Route::get('/json', [App\Http\Controllers\AdminSumberDayaController::class, 'json']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminSumberDayaController::class, 'find']);
-    });
-
-    Route::prefix('stoking')->name('stoking.')->group(function () {
-        Route::get('/tambah', [App\Http\Controllers\AdminStokingController::class, 'new'])->name('new');
-        Route::get('/edit/{id}', [App\Http\Controllers\AdminStokingController::class, 'edit'])->name('edit');
-        Route::POST('/save', [App\Http\Controllers\AdminStokingController::class, 'store']);
-        Route::POST('/update/{id}', [App\Http\Controllers\AdminStokingController::class, 'update']);
-        Route::GET('/delete/{id}', [App\Http\Controllers\AdminStokingController::class, 'destroy']);
-        Route::get('/json', [App\Http\Controllers\AdminStokingController::class, 'json']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminStokingController::class, 'find']);
-    });
-
-    Route::prefix('prediksi')->name('prediksi.')->group(function () {
-        Route::GET('/analys', [App\Http\Controllers\AdminPrediksiController::class, 'analys']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminLaporanController::class, 'find']);
-    });
-
-    Route::prefix('laporan')->name('laporan.')->group(function () {
-        Route::POST('/update/{id}', [App\Http\Controllers\AdminLaporanController::class, 'update']);
-        Route::GET('/delete/{id}', [App\Http\Controllers\AdminLaporanController::class, 'destroy']);
-        Route::get('/json', [App\Http\Controllers\AdminLaporanController::class, 'json']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminLaporanController::class, 'find']);
-    });
-});
-
-//MANAJER ROUTES
-Route::prefix('manajer')->name('manajer.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\ManajerDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/prediksi', [App\Http\Controllers\ManajerPrediksiController::class, 'index'])->name('prediksi');
-    Route::get('/laporan', [App\Http\Controllers\AdminLaporanController::class, 'index'])->name('laporan');
-    Route::get('/profile', [App\Http\Controllers\ManajerProfileController::class, 'index'])->name('profile');
-
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::POST('/update/{id}', [App\Http\Controllers\AdminProfileController::class, 'update']);
-    });
-
-    Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::get('/json', [App\Http\Controllers\AdminDashboardController::class, 'json']);
-        Route::get('/barChart', [App\Http\Controllers\AdminDashboardController::class, 'barChart']);
-        Route::get('/testpage', [App\Http\Controllers\AdminDashboardController::class, 'getCalculate']);
-    });
-
-    Route::prefix('prediksi')->name('prediksi.')->group(function () {
-        Route::GET('/analys', [App\Http\Controllers\AdminPrediksiController::class, 'analys']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminLaporanController::class, 'find']);
-    });
-
-    Route::prefix('laporan')->name('laporan.')->group(function () {
-        Route::POST('/update/{id}', [App\Http\Controllers\AdminLaporanController::class, 'update']);
-        Route::GET('/delete/{id}', [App\Http\Controllers\AdminLaporanController::class, 'destroy']);
-        Route::get('/json', [App\Http\Controllers\AdminLaporanController::class, 'json']);
-        Route::get('/find/{id}', [App\Http\Controllers\AdminLaporanController::class, 'find']);
-    });
-});
-
-//SPV ROUTES
-Route::prefix('spv')->name('spv.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\SPVDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/prediksi', [App\Http\Controllers\SPVPrediksiController::class, 'index'])->name('prediksi');
-    Route::get('/profile', [App\Http\Controllers\SPVProfileController::class, 'index'])->name('profile');
-
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::POST('/update/{id}', [App\Http\Controllers\SPVProfileController::class, 'update']);
-    });
-
-    Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::get('/json', [App\Http\Controllers\SPVDashboardController::class, 'json']);
-        Route::get('/barChart', [App\Http\Controllers\SPVDashboardController::class, 'barChart']);
-        Route::get('/testpage', [App\Http\Controllers\SPVDashboardController::class, 'getCalculate']);
-    });
-
-    Route::prefix('prediksi')->name('prediksi.')->group(function () {
-        Route::GET('/analys', [App\Http\Controllers\SPVPrediksiController::class, 'analys']);
-    });
-
-    Route::prefix('laporan')->name('laporan.')->group(function () {
-        Route::get('/history', [App\Http\Controllers\SPVHistoryController::class, 'index'])->name('history');
-       
-        Route::get('/prediksi', [App\Http\Controllers\SPVLaporanController::class, 'index'])->name('prediksi');
     });
 });

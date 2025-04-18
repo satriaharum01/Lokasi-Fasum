@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Barang;
 use Yajra\DataTables\Facades\DataTables;
 
-class AdminSumberDayaController extends Controller
+class AdminFasumController extends Controller
 {
     public function __construct()
     {
