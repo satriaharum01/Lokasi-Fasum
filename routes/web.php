@@ -45,11 +45,6 @@ Route::prefix('account')->group(function () {
 
 //ADMIN ROUTES
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/pengguna', [App\Http\Controllers\AdminPenggunaController::class, 'index'])->name('pengguna');
-    Route::get('/fasilitas', [App\Http\Controllers\AdminFasumController::class, 'index'])->name('fasum');
-    Route::get('/profile', [App\Http\Controllers\AdminProfileController::class, 'index'])->name('profile');
-
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::POST('/update/{id}', [App\Http\Controllers\AdminProfileController::class, 'update']);
     });
@@ -67,4 +62,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/json', [App\Http\Controllers\AdminPenggunaController::class, 'json']);
         Route::get('/find/{id}', [App\Http\Controllers\AdminPenggunaController::class, 'find']);
     });
+    Route::get('/{any}', function () {
+        return view('react');
+    })->where('any', '.*');
+
 });

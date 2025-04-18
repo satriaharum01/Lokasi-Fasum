@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Services\KonstantaCalculator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,14 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(KonstantaCalculator::class, function ($app, $params) {
-            return new KonstantaCalculator(
-                $params['alpha'],
-                $params['level'],
-                $params['level1'],
-                $params['level2']
-            );
-        });
+        //
     }
 
     /**

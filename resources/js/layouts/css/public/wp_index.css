@@ -1,0 +1,330 @@
+.popular_slider {
+    white-space: nowrap;
+    overflow: auto;
+    padding-bottom: 5px;
+    display: flex;
+}
+
+.popular_slider .bs {
+    display: block;
+    float: none !important;
+    white-space: normal;
+    flex: 1 0 165px;
+    max-width: 165px;
+}
+
+.bs .bsx {
+    position: relative;
+    overflow: hidden;
+    margin: 10px 10px;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+}
+
+.bs .bsx .limit {
+    border-radius: 5px;
+}
+
+.bs .bsx .limit .ply {
+    display: none;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    height: 100%;
+    top: 0;
+}
+
+.bs .bsx .limit .type.Manhua,
+.listupd .utao.styletwo .uta .imgu .type.Manhua,
+.stylesven .sveninner .sventop .sveninfo .svendetop .svenmeta .type.Manhua {
+    background-image: url(//komiku.one/wp-content/themes/mangareader/assets/images/manhua.png);
+}
+
+.bs .bsx .limit .colored,
+.listupd .utao.styletwo .uta .imgu .colored,
+.main-info .info-left .thumb .colored,
+.seriestucon .seriestucont .seriestucontl .thumb .colored,
+#content .seriestere .seriestucontent .seriestucontl .thumb .colored {
+    position: absolute;
+    z-index: 1;
+    bottom: 5px;
+    left: 5px;
+    background: #ebcf04;
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 700;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.bs .bsx .limit {
+    padding: 137% 0 0;
+    position: relative;
+    overflow: hidden;
+    background: #111;
+}
+
+.bs .bsx .limit img {
+    width: 100%;
+    height: auto;
+    top: 0;
+    position: absolute;
+    transition: transform .2s;
+}
+
+.bigor {
+    height: 95px;
+}
+
+.bs .bsx .tt {
+    color: #fff;
+    font-size: .95em;
+    margin: 8px 0;
+    margin-bottom: 3px;
+    font-weight: 600;
+    line-height: 20px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.bs .bsx .adds {
+    font-size: 13px;
+    color: #999;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.listupd {
+    padding: 10px;
+    overflow: hidden
+}
+
+.listupd.cp {
+    margin: -15px
+}
+
+.listupd .lexa {
+    overflow: hidden;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 10px
+}
+
+.listupd .lexa .thumb {
+    float: left;
+    overflow: hidden;
+    max-height: 100px;
+    margin-right: 15px
+}
+
+.listupd .lexa .dtl {
+    overflow: hidden;
+    padding: 10px;
+    margin: 0;
+    border-bottom: 0;
+    background: #f7f7f7
+}
+
+.listupd .lexa .dtl h2 {
+    font-size: 16px;
+    margin: 0;
+    margin-bottom: 5px
+}
+
+.listupd .lexa .dtl span {
+    display: block;
+    margin-bottom: 3px
+}
+
+.listupd .lexa .dtl h2 a {
+    color: #000
+}
+
+.listupd .lexa .dtl h2 a:hover {
+    text-decoration: none;
+    color: #366ad3
+}
+
+.listupd .lexa .thumb img {
+    max-width: 175px
+}
+
+.listupd .utao {
+    float: left;
+    width: 33.33333%;
+    position: relative
+}
+
+.listupd .utao .uta {
+    padding: 15px 10px;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid #312f40
+}
+
+.listupd .utao .uta .imgu {
+    position: relative;
+    float: left;
+    overflow: hidden;
+    height: 105px;
+    margin-right: 10px;
+    border-radius: 3px
+}
+
+.listupd .utao .uta .imgu img {
+    width: 75px;
+    height: auto
+}
+
+.listupd .utao .uta .imgu .hot {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    background: #ba291f;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 4px;
+    padding-top: 2px;
+    border-radius: 3px;
+    line-height: 15px;
+    color: #FFF
+}
+
+.listupd .utao .uta .imgu .new {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    background: #ff5e00;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 4px;
+    padding-top: 2px;
+    border-radius: 3px;
+    line-height: 15px;
+    color: #FFF
+}
+
+.listupd .utao.styletwo .uta .imgu .new {
+    left: 3px;
+    right: auto
+}
+
+.listupd .utao .uta .luf {
+    overflow: hidden
+}
+
+.listupd .utao .uta .luf h4 {
+    margin: 0;
+    font-size: .98em;
+    font-weight: 600;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis
+}
+
+.listupd .utao .uta .luf ul {
+    margin: 0;
+    margin-top: 8px;
+    padding-left: 18px;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.listupd .utao .uta .luf ul li {
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #366ad3
+}
+
+.listupd .utao .uta .luf ul li a {
+    display: block;
+    float: left;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap
+}
+
+.listupd .utao .uta .luf ul li span {
+    float: right;
+    color: #999;
+    font-size: 12px;
+    margin-top: 1px;
+}
+
+.listupd .utao .uta .luf ul.Manhua li {
+    color: #000000
+}
+
+.listupd .utao .uta .luf ul.Manhwa li {
+    color: #9d4942
+}
+
+.listupd .utao.styletwo {
+    width: 50%
+}
+
+.listupd .utao.styletwo .uta .imgu {
+    height: 150px;
+    border-radius: 0
+}
+
+.listupd .utao.styletwo .uta .imgu img {
+    width: 110px;
+}
+
+.listupd .utao.styletwo .uta .luf h4 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.listupd .utao.styletwo .uta .luf ul li {
+    margin-bottom: 8px;
+    font-size: 14px
+}
+
+.listupd .utao.styletwo .uta .luf ul li span {
+    margin-top: 2px;
+}
+
+.listupd .utao.styletwo .uta .luf ul li a {
+    color: #999;
+    max-width: 110px;
+}
+
+.listupd .utao.styletwo .uta .luf ul li a:hover {
+    color: #FFF
+}
+
+.statusind {
+    position: relative;
+    display: inline-block;
+    background: #333;
+    color: #fff;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-family: 'Fira Sans', sans-serif;
+}
+
+.statusind i {
+    margin-right: 5px;
+    font-size: 9px;
+}
+
+.statusind.Ongoing i {
+    color: #e38801;
+}
+
+.statusind.Completed i {
+    color: #d6291c;
+}
+
+@media only screen and (max-width: 1000px) {
+    .full .bs {
+        width: 16.666666%;
+    }
+}
