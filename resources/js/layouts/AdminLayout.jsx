@@ -1,24 +1,29 @@
-// src/layouts/AdminLayout.js
-import React, { useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import AdmHeader from './components/AdmHeader';
-import Sidebar from './components/Sidebar';
+import Preloader from '../components/Preloader';
 
 const AdminLayout = ({ isLoggedIn, setIsLoggedIn }) => {
-  
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+
   useEffect(() => {
-    import('./css/admin.css'); // Dynamically load admin.css
-  }, []);
+    // Trigger loading setiap route berubah
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000); // waktu loading-nya bisa diatur sesuai selera
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   return (
-    <>
     <div className="page">
       <div className="page-main">
-          <AdmHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}/>
-          <Outlet />
+        <AdmHeader isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        {loading ? <Preloader /> : <Outlet />}
       </div>
     </div>
-    </>
   );
 };
 

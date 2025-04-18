@@ -58,8 +58,9 @@ return [
 
         'img_upload' => [
             'driver' => 'local',
-            'root'   => base_path('/assets/images/laporan') ,
+            'root'   => public_path('/img') ,
         ],
+
         'faces_upload' => [
             'driver' => 'local',
             'root'   => base_path('/assets/img/faces') ,

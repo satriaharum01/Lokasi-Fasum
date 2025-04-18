@@ -6,6 +6,7 @@ const DynamicForm = ({ formPage, valID, formData, setFormData }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [schema, setSchema] = useState({ fillable: [], fieldTypes: {} });
+    const IMAGE_BASE_URL = "http://localhost:8000/img/fasum/";
 
     const fieldOptions = {
         status: ['ongoing', 'completed'],
@@ -47,14 +48,21 @@ const DynamicForm = ({ formPage, valID, formData, setFormData }) => {
     const handleChange = (e) => {
         const { name, value, type, files } = e.target;
 
-        setFormData((prev) => ({
-            ...prev,
-            [name]: type === 'file' ? files[0] : value,
-            ...(type === 'file' && {
-                [`${name}_preview`]: URL.createObjectURL(files[0]),
-            }),
-        }));
+        if (type === 'file') {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: files[0], // ini file aslinya
+                [`${name}_preview`]: URL.createObjectURL(files[0]), // ini buat preview di img tag
+            }));
+        } else {
+            setFormData((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
+
     };
+
 
     const hasFileImageField = Object.entries(schema.fieldTypes).some(
         ([field, type]) => type === 'file' && /(cover|image)/i.test(field)
@@ -75,7 +83,13 @@ const DynamicForm = ({ formPage, valID, formData, setFormData }) => {
                         field={field}
                         type={schema.fieldTypes[field]}
                         value={formData[field] || ''}
-                        imagePreview={formData[`${field}_preview`]}
+                        imagePreview={
+                            field === 'cover_image'
+                                ? formData[field] instanceof File
+                                    ? URL.createObjectURL(formData[field])
+                                    : `${IMAGE_BASE_URL}${formData[field]}`
+                                : formData[`${field}_preview`]
+                        }
                         totalFields={schema.fieldTypes.length}
                         options={fieldOptions[field]}
                         onChange={handleChange}

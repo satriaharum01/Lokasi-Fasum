@@ -21,6 +21,17 @@ Route::POST('/login', [App\Http\Controllers\AuthController::class, 'login']);
 Route::POST('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
 Route::get('/user', [App\Http\Controllers\AuthController::class, 'getUser']);
 
+Route::prefix('form-schema')->group(function () {
+    Route::get('/fasum', [App\Http\Controllers\AdminFasumController::class, 'getFormSchema']);
+});
+
+Route::prefix('fasum')->name('fasum.')->group(function () {
+    Route::GET('/get', [App\Http\Controllers\AdminFasumController::class, 'json']);
+    Route::POST('/save', [App\Http\Controllers\AdminFasumController::class, 'store']);
+    Route::POST('/update/{id}', [App\Http\Controllers\AdminFasumController::class, 'update']);
+    Route::DELETE('/delete/{id}', [App\Http\Controllers\AdminFasumController::class, 'delete']);
+    Route::GET('/find/{id}', [App\Http\Controllers\AdminFasumController::class, 'find']);
+});
 
 Route::prefix('data')->name('data.')->group(function () {
     Route::POST('/prediksi/store', [App\Http\Controllers\HomeController::class, 'prediksiStore']);

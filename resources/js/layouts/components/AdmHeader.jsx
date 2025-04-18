@@ -1,59 +1,12 @@
 // src/layouts/components/Header.js
-import Navbar from './Navbar';
 import React, { useEffect, useRef, useState, } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import FeatherIcon from 'feather-icons-react';
 import api from '../../apilogin';
 import '../../libs/js/jquery-3.3.1.min.js';
 import '../../libs/js/jquery.slicknav.js';
-import logo from '../../../public/img/logo.webp';
-
-const UserDropdown = ({ isLoggedIn, user, handleLogout }) => {
-    const [open, setOpen] = useState(false);
-    const dropdownRef = useRef();
-
-    // Close dropdown kalau klik di luar
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
-    return (
-        <li className="nav-item dropdown" ref={dropdownRef}>
-            <a
-                href="#"
-                className="nav-link"
-                onClick={(e) => {
-                    e.preventDefault();
-                    setOpen(!open);
-                }}
-            >
-                <FeatherIcon icon="user" size={15} /> Users
-            </a>
-
-            {open && (
-                <div className="dropdown-menu dropdown-menu-arrow show">
-                    <a href="/profile" className="dropdown-item">Profile</a>
-
-                    {isLoggedIn ? (
-                        <>
-                            <button onClick={handleLogout} className="dropdown-item">Logout</button>
-                        </>
-                    ) : (
-                        <a href="/login" className="dropdown-item">Login</a>
-                    )}
-                </div>
-            )}
-        </li>
-    );
-};
+import logo from '../../../../public/assets/img/logo.png';
+import LogoutModal from './LogoutModal.jsx';
 
 const NavbarItem = ({ path, label, isDropdown = false, children, ico = '' }) => {
     const location = useLocation();
@@ -100,13 +53,13 @@ const NavbarItem = ({ path, label, isDropdown = false, children, ico = '' }) => 
         </li>
     );
 };
-
-const UserAvatarDropdown = ({ user }) => {
+const UserAvatarDropdown = ({ user, setIsLoggedIn, setUser }) => {
     const [open, setOpen] = useState(false);
+    const [showLogout, setShowLogout] = useState(false);
     const dropdownRef = useRef();
     const navigate = useNavigate();
 
-    const ucfirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+    const ucfirst = (str) => str?.charAt(0).toUpperCase() + str?.slice(1);
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -127,9 +80,14 @@ const UserAvatarDropdown = ({ user }) => {
         setOpen(false);
     };
 
-    const handleLogout = () => {
-        // Trigger modal or run logout logic here
-        console.log('Logout clicked');
+    const handleLogout = async () => {
+        try {
+            await api.post('api/logout');
+            setIsLoggedIn(false);
+            setUser(null);
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
     };
 
     return (
@@ -146,12 +104,12 @@ const UserAvatarDropdown = ({ user }) => {
                     <span
                         className="avatar"
                         style={{
-                            backgroundImage: `url(/img/faces/${user?.faces})`,
+                            backgroundImage: `url(/img/faces/${user?.faces || 'default.jpg'})`,
                         }}
                     ></span>
                     <span className="ml-2 d-lg-block">
-                        <span className="text-white">{user?.username}</span>
-                        <small className="text-warning d-block mt-1">{ucfirst(user?.level || '')}</small>
+                        <span className="text-default">{user?.username}</span>
+                        <small className="text-muted d-block mt-1">{ucfirst(user?.level)}</small>
                     </span>
                 </a>
 
@@ -161,15 +119,21 @@ const UserAvatarDropdown = ({ user }) => {
                             <i className="dropdown-icon fe fe-user"></i> Profile
                         </button>
 
-                        {/* Divider */}
                         <div className="dropdown-divider"></div>
 
-                        <button className="dropdown-item" onClick={handleLogout}>
+                        <button className="dropdown-item" onClick={() => setShowLogout(true)}>
                             <i className="dropdown-icon fe fe-log-out"></i> Sign out
                         </button>
                     </div>
                 )}
             </div>
+
+            {/* Modal Logout */}
+            <LogoutModal
+                show={showLogout}
+                onClose={() => setShowLogout(false)}
+                onLogout={handleLogout}
+            />
         </div>
     );
 };
@@ -197,25 +161,8 @@ const HeaderToggler = () => {
 };
 
 function AdmHeader({ isLoggedIn, setIsLoggedIn }) {
-
-
-    const navigate = useNavigate();
-
     const [user, setUser] = useState(null);
 
-    const Logout = ({ onLogout }) => {
-        const handleLogout = async () => {
-            try {
-                await api.post('api/logout');
-                onLogout();
-                setIsLoggedIn(false);
-            } catch (error) {
-                //console.error('Logout failed', error);
-            }
-        };
-
-        return <a className="btn btn-sm btn-outline-primary" onClick={handleLogout}> Logout</a>;
-    };
     useEffect(() => {
         // Mendapatkan user aktif dari sesi
         const fetchUser = async () => {
@@ -224,8 +171,7 @@ function AdmHeader({ isLoggedIn, setIsLoggedIn }) {
                 setUser(response.data);
                 setIsLoggedIn(true);
             } catch (error) {
-
-                navigate("/home");
+                window.location.href = "/login";
                 console.log('Not authenticated');
             }
         };
@@ -233,19 +179,19 @@ function AdmHeader({ isLoggedIn, setIsLoggedIn }) {
         fetchUser();
     }, [isLoggedIn]);
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        setUser(null);
-    };
     return (
         <>
-            <div className="header py-4 bg-info" >
+            <div className="header py-4" >
                 <div className="container">
                     <div className="d-flex ">
-                        <a className="header-brand" href="./index.html">
+                        <a className="align-items-center header-brand row" href="./index.html">
                             <img src={logo} className="header-brand-img" alt="tabler logo" />
                         </a>
-                        <UserAvatarDropdown user={user} />
+                        <div className="ml-2 row flex-column ">
+                            <h5 style={{ lineHeight: '10px' }}>{import.meta.env.VITE_APP_DESCRIPTION}</h5>
+                            <h6 style={{ lineHeight: '0px' }} className='text-muted'>{import.meta.env.VITE_APP_NAME}</h6>
+                        </div>
+                        <UserAvatarDropdown user={user} setIsLoggedIn={setIsLoggedIn} setUser={setUser} />
                         <HeaderToggler />
                     </div>
                 </div>
@@ -258,10 +204,9 @@ function AdmHeader({ isLoggedIn, setIsLoggedIn }) {
 
                                 {/* Regular Link */}
                                 <NavbarItem path="/admin/dashboard" label="Home" ico="home" />
-                                <NavbarItem path="/admin/komik" label="Komik" ico="box" />
-                                <NavbarItem path="/admin/genre" label="Genre" ico="box" />
+                                <NavbarItem path="/admin/fasilitas" label="Fasilitas" ico="box" />
 
-                                <UserDropdown isLoggedIn={isLoggedIn} user={user} handleLogout={handleLogout} />
+                                <NavbarItem path="/admin/users" label="User" ico="users" />
                                 <NavbarItem path="#" label="setting" isDropdown ico="settings">
                                     <NavLink to="/admin/komik/" className="dropdown-item">Hero</NavLink>
                                     <NavLink to="/admin/komik/" className="dropdown-item">Site Setup</NavLink>

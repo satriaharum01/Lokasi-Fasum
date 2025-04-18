@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 
-const AdminGenreForm = ({ title, subTitle, type }) => {
+const adminFasumForm = ({ title, subTitle, type }) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [formData, setFormData] = useState({});
@@ -13,7 +13,7 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
 
   const storePost = async () => {
     try {
-      
+
       // Tampilkan loading
       Swal.fire({
         title: 'Processing...',
@@ -24,9 +24,9 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
         },
       });
       await initCsrf(); // ambil token dulu
-      await Api.post('api/genre/store', formData);
+      await Api.post('api/fasum/store', formData);
       Swal.close();
-      navigate('/admin/genre');
+      navigate('/admin/fasilitas');
       withReactContent(Swal).fire({
         title: 'Data Tersimpan!',
         text: 'Data telah berhasil disimpan!',
@@ -43,10 +43,8 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
       setError(error.response.data);
     }
   };
-
   const updatePost = async () => {
     try {
-
       // Tampilkan loading
       Swal.fire({
         title: 'Processing...',
@@ -56,16 +54,37 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
           Swal.showLoading();
         },
       });
-      await initCsrf(); // ambil token dulu
-      await Api.patch(`api/genres/update/${formData.id}`, formData);
+
+      // Ambil CSRF token dulu
+      await initCsrf();
+
+      // Buat FormData baru
+      const data = new FormData();
+      data.append('nama', formData.nama);
+      data.append('alamat', formData.alamat);
+      data.append('lat', formData.lat);
+      data.append('long', formData.long);
+      data.append('deskripsi', formData.deskripsi);
+
+      if (formData.cover_image instanceof File) {
+        data.append('cover_image', formData.cover_image);
+      }
+
+      await Api.post(`api/fasum/update/${formData.id}`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       Swal.close();
-      navigate('/admin/genre');
+      //navigate('/admin/fasilitas');
       withReactContent(Swal).fire({
         title: 'Data Tersimpan!',
         text: 'Data telah berhasil diupdate!',
         icon: 'success',
         timer: 2000,
       });
+
     } catch (error) {
       const errorMessages = Object.values(error.response.data).flat().join('\n');
       withReactContent(Swal).fire({
@@ -87,7 +106,7 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
   };
 
   const handleBack = () => {
-    navigate('../admin/genre');
+    navigate('../admin/fasilitas');
   };
 
   return (
@@ -102,7 +121,7 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
               <form onSubmit={handleSubmit} encType="multipart/form-data">
                 <div className="card-body row">
                   <DynamicForm
-                    formPage="genres"
+                    formPage="fasum"
                     valID={id}
                     formData={formData}
                     setFormData={setFormData}
@@ -126,4 +145,4 @@ const AdminGenreForm = ({ title, subTitle, type }) => {
   );
 };
 
-export default AdminGenreForm;
+export default adminFasumForm;

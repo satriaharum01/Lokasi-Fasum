@@ -54,8 +54,8 @@ class Controller extends BaseController
 
     public function image_destroy($filename)
     {
-        if (File::exists(public_path('/assets/images/laporan/' . $filename . ''))) {
-            File::delete(public_path('/assets/images/laporan/' . $filename . ''));
+        if (File::exists(public_path('/img/fasum/' . $filename . ''))) {
+            File::delete(public_path('/img/fasum/' . $filename . ''));
         }
     }
     public function profile_destroy($filename)

@@ -36,6 +36,10 @@ Route::prefix('find')->name('find.')->group(function () {
 
 //Login
 
+Route::get('/login', function () {
+    return view('auth');
+});
+
 Route::prefix('account')->group(function () {
     Route::get('/login', [App\Http\Controllers\HomeController::class, 'login'])->name('login');
     Route::POST('/logout', [App\Http\Controllers\CustomAuth::class, 'customlogout'])->name('logout');

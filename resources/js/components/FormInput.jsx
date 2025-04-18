@@ -1,11 +1,10 @@
 import React from 'react';
 
-const FormInput = ({ field, type, value, onChange, totalFields, options = [], imagePreview, views = 1 ,fullCol }) => {
+const FormInput = ({ field, type, value, onChange, totalFields, options = [], imagePreview, views = 1, fullCol }) => {
   const label = field.replace(/[_-]/g, ' ').replace(/id$/i, '').replace(/\b\w/g, c => c.toUpperCase());
 
   let colMd = 6;
   let colLg = 6;
-
   // Logic khusus untuk image
   const isImageUpload = type === 'file' && /(cover|image)/i.test(field);
   if (isImageUpload) {
@@ -28,8 +27,12 @@ const FormInput = ({ field, type, value, onChange, totalFields, options = [], im
               <div className="form-group">
                 <label className="form-label text-center">{label}</label>
                 <img
-                  src={imagePreview || '/img/comics/default.jpg'}
-                  alt={label}
+                  src={imagePreview || '/img/fasum/default.jpg'}
+                  alt={label} 
+                  onError={(e) => {
+                    e.target.onerror = null; // biar gak loop
+                    e.target.src = '/img/fasum/default.jpg'; // path fallback default
+                  }}
                   className="cover__anime img-fluid mb-2"
                 />
                 <input

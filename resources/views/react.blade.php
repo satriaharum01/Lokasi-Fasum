@@ -12,7 +12,6 @@
   <body>
     <div class="page">
       <div class="page-main">
-        @include('backend.header')
 
         {{-- Non-React content --}}
         @yield('content')
@@ -23,7 +22,5 @@
         @include('backend.footer')
       </div>
     </div>
-    @include('backend.js')
-    @yield('js')
   </body>
 </html>

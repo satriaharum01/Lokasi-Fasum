@@ -1,24 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom/client';
 import { useNavigate } from 'react-router-dom';
 import DataTable from "datatables.net-react";
 import DT from "datatables.net-bs5";
 import Swal from 'sweetalert2';
 import Api from '../api';
-import StatusButton from '../components/StatusButton';
 
 DataTable.use(DT);
 
-const adminKomik = ({ subTitle, title }) => {
+const adminFasum = ({ subTitle, title }) => {
   const navigate = useNavigate();
-  const [komikList, setkomik] = useState([]);
+  const [genreList, setGenre] = useState([]);
   const [dataList, setDataList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const deletePost = async (id) => {
     //delete with api
-    await Api.delete(`/comics/delete/${id}`)
+    await Api.delete(`/genres/delete/${id}`)
       .then(() => {
         setDataList([]);
         fetchDataList();
@@ -29,7 +27,7 @@ const adminKomik = ({ subTitle, title }) => {
   }
   const fetchDataList = async () => {
     try {
-      const response = await Api.get('/comics'); // Ganti dengan endpoint yang sesuai
+      const response = await Api.get('/fasum/get'); // Ganti dengan endpoint yang sesuai
       setDataList(response.data);
     } catch (err) {
       setError(err.message);
@@ -38,18 +36,21 @@ const adminKomik = ({ subTitle, title }) => {
     }
   };
 
+  const handleEditClick = (data) => {
+    navigate(`edit/${data}`);
+  };
   useEffect(() => {
     // Attach event listener setiap kali tabel selesai dirender ulang
-    $("body").on("click", ".btn-eye", function () {
+    $("body").on("click", ".btn-edit", function () {
       const id = $(this).data("id");
-      const komik = komikList.find((p) => p.id === id);
-      handleEditClick(komik);
+      const genre = dataList.find((p) => p.id === id);
+      handleEditClick(genre.id);
     });
     // Bersihkan event listener saat component unmount
     return () => {
       $("body").off("click", ".btn-edit");
     };
-  }, [komikList]);
+  }, [dataList]);
 
   useEffect(() => {
     // Attach event listener setiap kali tabel selesai dirender ulang
@@ -87,27 +88,16 @@ const adminKomik = ({ subTitle, title }) => {
       data: 'DT_RowIndex'
     },
     {
-      data: 'title'
+      data: 'nama'
     },
     {
-      data: 'slug'
+      data: 'alamat', className: 'text-justify'
     },
     {
-      data: 'author'
+      data: 'lat'
     },
     {
-      data: 'status',
-      render: function (data, type, row, meta) {
-        const id = `status-btn-${row.id}`;
-        setTimeout(() => {
-          const el = document.getElementById(id);
-          if (el) {
-            const root = ReactDOM.createRoot(el);
-            root.render(<StatusButton status={data} />);
-          }
-        }, 0);
-        return `<div id="status-btn-${row.id}"></div>`;
-      },
+      data: 'long'
     },
     {
       data: 'id',
@@ -143,12 +133,15 @@ const adminKomik = ({ subTitle, title }) => {
                   >
                     <thead>
                       <tr>
-                        <th width="7%"></th>
-                        <th className="text-primary text-center" width="20%">Komik</th>
-                        <th className="text-primary text-center">Slug</th>
-                        <th className="text-primary text-center">Author</th>
-                        <th className="text-primary text-center">Status</th>
-                        <th className="text-primary text-center">Action</th>
+                        <th width="7%" rowSpan={2}></th>
+                        <th rowSpan={2} className="text-primary text-center align-content-around" width="20%">Fasilitas Umum</th>
+                        <th rowSpan={2} className="text-primary text-center align-content-around">Alamat</th>
+                        <th colSpan={2} className="text-primary text-center align-content-around">Cordinate</th>
+                        <th rowSpan={2} className="text-primary text-center align-content-around">Action</th>
+                      </tr>
+                      <tr>
+                        <th className="text-primary text-center">Latitude</th>
+                        <th className="text-primary text-center">longitude</th>
                       </tr>
                     </thead>
                     <tbody className='text-center'></tbody>
@@ -157,7 +150,7 @@ const adminKomik = ({ subTitle, title }) => {
               </div>
               <div className="card-footer d-flex justify-content-between">
                 <div>
-                  Komikmu - {title}
+                  {import.meta.env.VITE_APP_NAME} - {title}
                 </div>
               </div>
             </div>
@@ -168,4 +161,4 @@ const adminKomik = ({ subTitle, title }) => {
   );
 };
 
-export default adminKomik;
+export default adminFasum;

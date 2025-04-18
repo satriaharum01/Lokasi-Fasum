@@ -1,43 +1,44 @@
 <?php
 
-// app/Http/Controllers/AuthController.php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-//Call Models
 use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function index()
-    {
-        $this->data['title'] = 'Login';
-
-        return view('front/login', $this->data);
-    }
-
     public function login(Request $request)
     {
-        $request->validate([
+        $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required'
         ]);
 
-        $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
-            // Mengambil data user
+            $request->session()->regenerate();
+            
             $rows = User::find(Auth::user()->id);
             $level = strtolower($rows->level);
             $rows->update([
                 'last_login' => now()
              ]);
-            return redirect()->intended('/admin/dashboard')
-                        ->withSuccess('Signed in');
+            // Mengambil data user
+            $user = Auth::user();
+            return response()->json([
+                'message' => 'Login successful',
+                'type' => 'alert-success',
+                'user' => [
+                    'id' => $user->id,
+                    'username' => $user->name, // atau sesuaikan field `username`
+                    'email' => $user->email,
+                    'level' => $user->level,
+                    'faces' => $user->faces
+                ]
+            ]);
         }
 
-        return redirect(route('account.login'))->withErrors(['alertMessage' => 'Email atau Password Salah','alertType' => 'alert-danger']);
+        return response()->json(['message' => 'Email atau Password Salah !','type' => 'alert-danger',], 401);
     }
 
     public function logout(Request $request)
@@ -56,8 +57,10 @@ class AuthController extends Controller
         if ($user) {
             return response()->json([
                 'id' => $user->id,
-                'username' => $user->name, // atau sesuaikan field `username`
-                'email' => $user->email
+                'username' => $user->name,
+                'level' => $user->level, // atau sesuaikan field `username`
+                'email' => $user->email,
+                'faces' => $user->faces
             ]);
         }
 

@@ -4,93 +4,122 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 //Use Models
-use App\Models\Barang;
+use App\Models\Fasum;
 use Yajra\DataTables\Facades\DataTables;
+use File;
 
 class AdminFasumController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        $this->page = 'admin/resources';
         $this->middleware('is_admin');
-        $this->data['route_new'] = 'admin.resources';
     }
 
-    public function index()
+
+    public function getFormSchema()
     {
-        $this->data['title'] = 'Data Sumber Daya';
-        $this->data['sub_title'] = 'List Sumber Daya';
+        $fasum = new Fasum();
 
-        return view('admin/resources/index', $this->data);
-    }
-
-    public function show($id)
-    {
-        $anime = Barang::findorfail($id);
-        $this->data['title'] = 'Data Sumber Daya';
-        $this->data['sub_title'] = $anime->title;
-
-        return view('admin/resources/show', $this->data);
-    }
-    public function new()
-    {
-        $this->data['title'] = 'Data Sumber Daya';
-        $this->data['sub_title'] = 'Tambah Data ';
-        $this->data['fillable'] = (new Barang())->getFillable();
-        $this->data['fieldTypes'] = (new Barang())->getField();
-        $this->data['action'] = 'admin/resources/save';
-
-        return view('admin/resources/detail', $this->data);
-    }
-
-    public function edit($id)
-    {
-        $rows = Barang::find($id);
-        $this->data['title'] = 'Data Sumber Daya';
-        $this->data['sub_title'] = 'Edit Data ';
-        $this->data['fieldTypes'] = (new Barang())->getField();
-        $this->data['load'] = $rows;
-        $this->data['action'] = 'admin/resources/update/'.$rows->id;
-
-        return view('admin/resources/detail', $this->data);
+        return response()->json([
+            'fillable' => $fasum->getFillable(),
+            'fieldTypes' => $fasum->getField() // asumsi ini array field => type
+        ]);
     }
     public function json()
     {
-        $data = Barang::select('*')
-                ->orderby('nama_barang', 'ASC')
-                ->get();
+        $data = Fasum::select('*')
+                ->orderby('nama', 'ASC')
+                ->get()->map(function ($item, $index) {
+                    $item->DT_RowIndex = $index + 1;
+                    return $item;
+                });
 
-        return DataTables::of($data)
-            ->addIndexColumn()
-            ->make(true);
+        return response()->json($data);
+    }
+
+    public function find($id)
+    {
+        // Mengambil data anime berdasarkan ID
+        $fasum = Fasum::find($id);
+        if ($fasum) {
+            return response()->json($fasum);
+        } else {
+            return response()->json(['message' => 'Fasum not found'], 404);
+        }
     }
 
     //CRUD
-
     public function update(Request $request, $id)
     {
-        $rows = Barang::find($id);
+        // Validasi data masuk
+        $validator = Fasum::validate($request->all());
 
-        $fillAble = (new Barang())->getFillable();
-        $rows->update($request->only($fillAble));
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
 
-        return redirect($this->page);
+        $fasum = Fasum::findOrFail($id);
+        $fillableFields = (new Fasum())->getFillable();
+
+        // Update field lainnya yang boleh diisi
+        $fasum->fill($request->only($fillableFields));
+
+        // Handle file cover_image jika ada
+        if ($request->file('cover_image')) {
+            $file = $request->file('cover_image');
+            $ext = $file->getClientOriginalExtension();
+
+            // Generate nama file
+            $filename = $request->nama . '.' . $ext;
+
+            // Hapus file lama jika ada
+            $this->image_destroy($filename); // Nama file lama
+
+            // Simpan file baru ke disk 'img_fasum'
+            $file->storeAs('/fasum', $filename, ['disk' => 'img_upload']);
+
+            // Simpan nama file ke model
+            $fasum->cover_image = $filename;
+        }
+        
+        $fasum->save();
+
+        return response()->json([
+            'message' => 'Data updated successfully',
+            'result' => $fasum
+        ], 200);
     }
 
     public function store(Request $request)
     {
-        $fillAble = (new Barang())->getFillable();
-        Barang::create($request->only($fillAble));
+        // Validate the incoming request
+        $validator =  Fasum::validate($request->all());
 
-        return redirect($this->page);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $fillAble = (new Fasum())->getFillable();
+
+        // Handle file jika ada
+        if ($request->file('cover_image_preview')) {
+            $file = $request->file('cover_image_preview');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img/fasum'), $filename);
+            $fillAble->cover_image =  $filename;
+        }
+
+        $result = Fasum::create($request->only($fillAble));
+
+        return response()->json(['message' => 'Data created successfully', 'result' => $result], 201);
     }
 
     public function destroy($id)
     {
-        $rows = Barang::findOrFail($id);
-        $rows->delete();
+        $rows = Fasum::findOrFail($id);
+        $result = $rows->delete();
 
-        return redirect($this->page);
+        return response()->json(['message' => 'Data deleted successfully', 'result' => $result], 201);
     }
 }
