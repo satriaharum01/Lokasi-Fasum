@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fasum;
+use App\Models\Jenis;
 use App\Models\Notif;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -30,8 +31,7 @@ class HomeController extends Controller
     */
     public function index()
     {
-        return redirect()->to(route('login'));
-        return view('landing/index', $this->data);
+        return view('map', $this->data);
     }
 
     public function login()
@@ -79,4 +79,25 @@ class HomeController extends Controller
         return response()->json($years);
     }
 
+    public function getJenis()
+    {
+        $data = Jenis::select('*')
+                ->orderby('jenis', 'ASC')
+                ->get();
+
+        return response()->json($data);
+    }
+
+    public function countTempatPerJenis()
+    {
+        $tempat = Fasum::with('jenisTempat')->get();
+
+        $counts = $tempat->groupBy(function ($item) {
+            return $item->jenisTempat->jenis ?? 'Undefined';
+        })->map(function ($group) {
+            return $group->count();
+        });
+
+        return response()->json($counts);
+    }
 }

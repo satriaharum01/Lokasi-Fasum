@@ -331,7 +331,9 @@ ol {
 -----------------------*/
 
 .header {
-	background: #1f81eb;
+	background: #262829;
+	padding-top: 0px;
+	padding-bottom: 0px;
 }
 
 .header__logo {
@@ -354,7 +356,6 @@ ol {
 }
 
 .header__menu ul li.active a {
-	background: #ffffff;
 	color: #1f81eb;
 }
 
@@ -1937,9 +1938,9 @@ ol {
 -----------------------*/
 
 .footer {
-	background: #070720;
-	padding-top: 60px;
-	padding-bottom: 40px;
+	background: #ffffff;
+	/*padding-top: 60px;
+	padding-bottom: 40px;*/
 	position: relative;
 }
 

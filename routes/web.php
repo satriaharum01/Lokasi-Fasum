@@ -16,12 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
 
 Route::prefix('get')->name('get.')->group(function () {
-    Route::GET('/barang', [App\Http\Controllers\HomeController::class, 'getBarang']);
-    Route::GET('/pengadaan/tahun', [App\Http\Controllers\HomeController::class, 'getTahunUnik']);
-    Route::GET('/history', [App\Http\Controllers\SPVHistoryController::class, 'json']);
-    Route::get('/prediksi', [App\Http\Controllers\SPVLaporanController::class, 'json']);
-    Route::GET('/history/filter', [App\Http\Controllers\SPVHistoryController::class, 'filterData']);
-    Route::GET('/laporan', [App\Http\Controllers\SPVLaporanController::class, 'json']);
+    Route::GET('/jenis', [App\Http\Controllers\HomeController::class, 'getJenis']);
+
     Route::prefix('prediksi')->name('prediksi.')->group(function () {
         Route::GET('/analys', [App\Http\Controllers\HomeController::class, 'analys']);
     });

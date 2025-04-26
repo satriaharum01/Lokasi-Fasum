@@ -11,8 +11,9 @@ class Fasum extends Model
     use HasFactory;
     protected $table = 'fasilitas_umum';
     protected $primaryKey = 'id';
-    protected $fillable = ['nama','alamat','lat','long','cover_image','deskripsi'];
+    protected $fillable = ['nama','alamat','lat','long','cover_image','deskripsi','jenis_id'];
     protected $inputType = [
+        'jenis_id' => 'select',
         'nama' => 'text',
         'alamat' => 'text',
         'lat' => 'text',
@@ -35,5 +36,10 @@ class Fasum extends Model
     public function getField()
     {
         return $this->inputType;
+    }
+
+    public function jenisTempat()
+    {
+        return $this->belongsTo(Jenis::class, 'jenis_id');
     }
 }

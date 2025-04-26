@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Api, { initCsrf } from '../apilogin';
-import DynamicForm from '../components/dynamicForm';
+import DynamicForm from '../components/DynamicForm';
 import { useNavigate, useParams } from 'react-router-dom';
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
@@ -10,6 +10,36 @@ const adminFasumForm = ({ title, subTitle, type }) => {
   const { id } = useParams();
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
+  const [fieldOptions, setFieldOptions] = useState({
+    jenis_id: []
+  });
+
+  useEffect(() => {
+    const fetchJenisData = async () => {
+      try {
+        const response = await Api.get('/get/jenis');
+        const jenisIds = response.data.map(({ id, jenis }) => ({
+          id:id,
+          data:jenis
+        }));
+        
+        setFieldOptions((prev) => ({
+          ...prev,
+          jenis_id: jenisIds,
+        }));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+
+      }
+    };
+
+    fetchJenisData();
+  }, []);
+
+  useEffect(() => {
+    console.log('Field Options Updated:', fieldOptions);
+  }, [fieldOptions]);
 
   const storePost = async () => {
     try {
@@ -60,6 +90,7 @@ const adminFasumForm = ({ title, subTitle, type }) => {
 
       // Buat FormData baru
       const data = new FormData();
+      data.append('jenis_id', formData.jenis_id);
       data.append('nama', formData.nama);
       data.append('alamat', formData.alamat);
       data.append('lat', formData.lat);
@@ -125,6 +156,7 @@ const adminFasumForm = ({ title, subTitle, type }) => {
                     valID={id}
                     formData={formData}
                     setFormData={setFormData}
+                    fieldOptions={fieldOptions}
                   />
                 </div>
                 <div className="card-footer">
@@ -134,7 +166,7 @@ const adminFasumForm = ({ title, subTitle, type }) => {
                   <button type="submit" className="btn btn-primary mx-2">
                     Simpan
                   </button>
-                  <div className="float-right">Komikmu - {title}</div>
+                  <div className="float-right">{import.meta.env.VITE_APP_NAME} - {title}</div>
                 </div>
               </form>
             </div>

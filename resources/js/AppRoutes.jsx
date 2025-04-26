@@ -8,6 +8,7 @@ import AdminFasum from './pages/adminFasum';
 import AdminFasumForm from './pages/adminFasumForm';
 import Login from './pages/login';
 import PrivateRoute from './utils/privateRoutes';
+import PublicMap from './pages/PublicMap';
 
 function AppRoutes() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,7 +19,7 @@ function AppRoutes() {
         <Routes>
           {/* Rute Publik */}
           <Route element={<PublicLayout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}>
-            {/* Tambahkan halaman publik lain di sini */}
+            <Route path="/" element={<PublicMap />} />
           </Route>
 
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />

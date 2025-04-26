@@ -5,9 +5,10 @@ import { NavLink } from 'react-router-dom';
 import api from '../../apilogin';
 import '../../libs/js/jquery-3.3.1.min.js';
 import '../../libs/js/jquery.slicknav.js';
+import logo from '../../../../public/assets/img/logo.png';
 
 
-function Header({isLoggedIn,setIsLoggedIn}) {
+function Header({ isLoggedIn, setIsLoggedIn }) {
 
     const [user, setUser] = useState(null);
 
@@ -22,7 +23,7 @@ function Header({isLoggedIn,setIsLoggedIn}) {
             }
         };
 
-        return <button className="btn btn-outline-info ml-2 text-warning" onClick={handleLogout}>Logout</button>;
+        return <button className="btn btn-outline-white pull-right mb-0 text-danger" onClick={handleLogout}>Logout</button>;
     };
 
     useEffect(() => {
@@ -35,19 +36,22 @@ function Header({isLoggedIn,setIsLoggedIn}) {
     }, []);
 
     useEffect(() => {
-        // Mendapatkan user aktif dari sesi
         const fetchUser = async () => {
-            try {
-                const response = await api.get('/api/user');
-                setUser(response.data);
-                setIsLoggedIn(true);
-            } catch (error) {
-                console.log('Not authenticated');
-            }
+            await api.get('/api/user')
+                .then((response) => {
+                    setUser(response.data);
+                    setIsLoggedIn(true);
+                })
+                .catch((e) => {
+                    console.log('User not authenticated or session expired.');
+                    setIsLoggedIn(false);
+                });
         };
 
         fetchUser();
     }, [isLoggedIn]);
+
+
 
     const handleLogout = () => {
         setIsLoggedIn(false);
@@ -58,13 +62,15 @@ function Header({isLoggedIn,setIsLoggedIn}) {
             <header className="header">
                 <div className="container mr-5">
                     <div className="row">
-                        <div className="col-lg-2">
-                            <div className="header__logo">
-                                <NavLink to="/home"><img src="img/logo.webp" alt="Logo" /></NavLink>
+                        <div className="col-lg-1 row align-items-center pull-left">
+                            <div className=" header-brand ">
+                                <NavLink to="/home">
+                                    <img src={logo} className="header-brand-img" alt="Logo" />
+                                </NavLink>
                             </div>
                         </div>
                         <div className="col-lg-6">
-                            <div className="header__nav">
+                            <div className="header__nav pull-left">
                                 <Navbar isLoggedIn={isLoggedIn} />
                             </div>
                         </div>
@@ -72,13 +78,12 @@ function Header({isLoggedIn,setIsLoggedIn}) {
                             <div className="header__right p-0 text-white">
                                 {isLoggedIn ? (
                                     <>
-                                        Welcome, {user?.username}
+                                        
                                         <Logout onLogout={handleLogout} />
                                     </>
                                 ) : (
                                     <>
-                                        <NavLink to="/search"><span className="icon_search"></span></NavLink>
-                                        <NavLink to="/login"><span className="icon_profile"></span></NavLink>
+                                        <span className="icon_profile" onClick={() => window.location.href = '/login'} style={{ cursor: 'pointer' }}></span>
                                     </>
                                 )}
                             </div>

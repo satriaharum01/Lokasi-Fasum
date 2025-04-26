@@ -28,17 +28,17 @@ function Navbar({ isLoggedIn }) {
         <>
             <nav className="header__menu mobile-menu">
                 <ul>
-                    <NavbarItem path="/home" label="Homepage" />
-                    <NavbarItem path="/categories" label="Categories" />
-                    <NavbarItem path="/blog" label="Our Blogs" />
+                    <NavbarItem path="/" label="Peta" />
+                    <NavbarItem path="/home" label="Fasum" />
                     {isLoggedIn ? (
                         <>
-                            <NavbarItem path="/admin" label="Dashboard" />
+                            <li className=''>
+                                <a href='#' className='link' onClick={() => window.location.href = '/admin/dashboard'} style={{ cursor: 'pointer' }}> Dashboard</a>
+                            </li>
                         </>
                     ) : (
                         <>
 
-                            <NavbarItem path="/login" label="Login" />
                         </>
                     )}
                     {/* Add more NavbarItem components for additional pages */}

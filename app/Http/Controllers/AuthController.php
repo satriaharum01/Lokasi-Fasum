@@ -17,7 +17,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $rows = User::find(Auth::user()->id);
             $level = strtolower($rows->level);
             $rows->update([

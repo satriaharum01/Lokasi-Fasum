@@ -206,13 +206,13 @@ function AdmHeader({ isLoggedIn, setIsLoggedIn }) {
                                 <NavbarItem path="/admin/dashboard" label="Home" ico="home" />
                                 <NavbarItem path="/admin/fasilitas" label="Fasilitas" ico="box" />
 
-                                <NavbarItem path="/admin/users" label="User" ico="users" />
+                                <NavbarItem path="/admin/users" label="Users" ico="users" />
                                 <NavbarItem path="#" label="setting" isDropdown ico="settings">
                                     <NavLink to="/admin/komik/" className="dropdown-item">Hero</NavLink>
                                     <NavLink to="/admin/komik/" className="dropdown-item">Site Setup</NavLink>
                                 </NavbarItem>
 
-                                <NavbarItem path="/home" label="Main Page" ico="chrome" />
+                                <NavbarItem path="/" label="Main Page" ico="chrome" />
                             </ul>
                         </div>
                     </div>

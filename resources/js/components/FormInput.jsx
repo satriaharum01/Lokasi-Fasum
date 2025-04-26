@@ -74,8 +74,8 @@ const FormInput = ({ field, type, value, onChange, totalFields, options = [], im
                 >
                   <option value="" disabled>-- Pilih {label}</option>
                   {options.map((row, i) => (
-                    <option key={i} value={row}>
-                      {row.charAt(0).toUpperCase() + row.slice(1)}
+                    <option key={i} value={row.id}>
+                      {row.data}
                     </option>
                   ))}
                 </select>

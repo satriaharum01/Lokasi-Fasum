@@ -2,16 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Api from '../api';
 import FormInput from './FormInput';
 
-const DynamicForm = ({ formPage, valID, formData, setFormData }) => {
+const DynamicForm = ({ formPage, valID, formData, setFormData, fieldOptions }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [schema, setSchema] = useState({ fillable: [], fieldTypes: {} });
     const IMAGE_BASE_URL = "http://localhost:8000/img/fasum/";
-
-    const fieldOptions = {
-        status: ['ongoing', 'completed'],
-        // tambahin sesuai kebutuhan
-    };
 
     useEffect(() => {
         const fetchSchema = async () => {

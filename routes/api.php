@@ -25,6 +25,11 @@ Route::prefix('form-schema')->group(function () {
     Route::get('/fasum', [App\Http\Controllers\AdminFasumController::class, 'getFormSchema']);
 });
 
+Route::prefix('get')->name('get.')->group(function () {
+    Route::GET('/jenis', [App\Http\Controllers\HomeController::class, 'getJenis']);
+    Route::GET('/count/fasum', [App\Http\Controllers\HomeController::class, 'countTempatPerJenis']);
+});
+
 Route::prefix('fasum')->name('fasum.')->group(function () {
     Route::GET('/get', [App\Http\Controllers\AdminFasumController::class, 'json']);
     Route::POST('/save', [App\Http\Controllers\AdminFasumController::class, 'store']);
