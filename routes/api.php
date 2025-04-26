@@ -38,7 +38,8 @@ Route::prefix('fasum')->name('fasum.')->group(function () {
     Route::GET('/find/{id}', [App\Http\Controllers\AdminFasumController::class, 'find']);
 });
 
-Route::prefix('data')->name('data.')->group(function () {
-    Route::POST('/prediksi/store', [App\Http\Controllers\HomeController::class, 'prediksiStore']);
-    Route::DELETE('/prediksi/delete/{id}', [App\Http\Controllers\HomeController::class, 'prediksiDestroy']);
+Route::prefix('map')->name('map.')->group(function () {
+    Route::GET('/get/fasum', [App\Http\Controllers\MapPublicController::class, 'getFasumAll']);
+    Route::GET('/filter/jenis/{:id}', [App\Http\Controllers\MapPublicController::class, 'getFilteredFasum']);
+
 });

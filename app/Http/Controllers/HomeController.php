@@ -41,17 +41,6 @@ class HomeController extends Controller
     }
 
     //GeT FUnction
-    public function getBarang()
-    {
-        $data = Barang::select('*')
-                ->orderby('nama_barang', 'ASC')
-                ->get();
-
-        return Datatables::of($data)
-            ->addIndexColumn()
-            ->make(true);
-    }
-
     public function getUsersLevel($level)
     {
         if ($level == 'all') {
@@ -66,17 +55,6 @@ class HomeController extends Controller
         return Datatables::of($data)
             ->addIndexColumn()
             ->make(true);
-    }
-
-    public function getTahunUnik()
-    {
-        $years = Pengadaan::selectRaw('YEAR(tanggal) as year')
-            ->distinct()
-            ->orderBy('year', 'asc')
-            ->pluck('year')
-            ->toArray();
-
-        return response()->json($years);
     }
 
     public function getJenis()

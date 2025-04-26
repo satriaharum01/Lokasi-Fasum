@@ -40,6 +40,11 @@ class Fasum extends Model
 
     public function jenisTempat()
     {
-        return $this->belongsTo(Jenis::class, 'jenis_id');
+        return $this->belongsTo(Jenis::class, 'jenis_id')->withDefault(function ($data) {
+            if (collect($data->getFillable())->every(fn ($attr) => $data->$attr === null)) {
+                return 'Undefined';
+            }
+            return $data;
+        });
     }
 }

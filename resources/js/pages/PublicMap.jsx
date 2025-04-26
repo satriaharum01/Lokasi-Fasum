@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import api from "../apilogin";
+import MapMarkers from "../components/map/MapMarkers";
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
 
 // Fungsi untuk memuat Google Maps API
 function loadGoogleMapsAPI() {
@@ -14,29 +16,45 @@ function loadGoogleMapsAPI() {
     });
 }
 
+const callSwall = (loading) => {
+    if (loading) {
+        Swal.fire({
+            title: 'Load Map...',
+            text: 'Please wait while loading your data.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            },
+        });
+    } else {
+        Swal.close();
+        withReactContent(Swal).fire({
+          title: 'Map berhasil ditampilkan!',
+          text: '',
+          icon: 'success',
+          timer: 1000,
+        });
+    };
+}
+
 function PublicMap() {
     const mapRef = useRef(null);
-    const [markers, setMarkers] = useState([]);
-
+    const [map, setMap] = useState(null)
+    const [loading, setLoading] = useState(true);
     // Inisialisasi peta dan menambahkan marker
     const initMap = () => {
-        const map = new google.maps.Map(mapRef.current, {
+        const mapInstance = new google.maps.Map(mapRef.current, {
             center: {
-                lat: parseFloat(import.meta.env.VITE_DEFAULT_LAT) || -6.1751, // Default jika tidak ada di .env
-                lng: parseFloat(import.meta.env.VITE_DEFAULT_LNG) || 106.8650, // Default jika tidak ada di .env
+                lat: parseFloat(import.meta.env.VITE_DEFAULT_LAT) || -6.1751,
+                lng: parseFloat(import.meta.env.VITE_DEFAULT_LNG) || 106.8650,
             },
             mapTypeControl: false,
-            zoom: parseInt(import.meta.env.VITE_DEFAULT_ZOOM) || 10, // Default zoom level jika tidak ada
+            zoom: parseInt(import.meta.env.VITE_DEFAULT_ZOOM) || 10,
         });
 
-        // Menambahkan marker ke peta
-        markers.forEach((markerData) => {
-            new google.maps.Marker({
-                position: { lat: markerData.lat, lng: markerData.lng },
-                map: map,
-                title: markerData.title,
-            });
-        });
+        setMap(mapInstance);
+        // Setelah map siap, kita render marker
+
     };
 
     // Memuat Google Maps API dan menunggu sampai selesai
@@ -44,21 +62,35 @@ function PublicMap() {
         const loadMap = async () => {
             try {
                 await loadGoogleMapsAPI(); // Menunggu sampai script selesai dimuat
-                window.initMap = initMap;  // Menetapkan initMap ke window
+                window.initMap = initMap; // Menetapkan initMap ke window
             } catch (error) {
                 console.error("Error loading Google Maps API:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
         loadMap();
-        
     }, []);  // Hanya dijalankan sekali saat komponen pertama kali dimuat
+   
+    // Menampilkan loading saat map sedang dimuat
+    useEffect(() => {
+        // Trigger loading setiap route berubah
+        callSwall(true);
+        const timer = setTimeout(() => {
+            setLoading(false);
+            callSwall(false);
+        }, 3000); // waktu loading-nya bisa diatur sesuai selera
+        return () => clearTimeout(timer);   
+    }, []);
 
     return (
         <div>
             <div id="map" ref={mapRef} style={{ width: "100%", height: "90vh" }}></div>
+            {map && <MapMarkers map={map} />} {/* Render MapMarkers hanya jika peta sudah siap */}
         </div>
     );
+
 }
 
 export default PublicMap;
