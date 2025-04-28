@@ -43,5 +43,6 @@ Route::prefix('map')->name('map.')->group(function () {
     Route::GET('/get/fasum', [App\Http\Controllers\MapPublicController::class, 'getFasumAll']);
     Route::GET('/filter/jenis/{:id}', [App\Http\Controllers\MapPublicController::class, 'getFilteredFasum']);
     Route::GET('/calculate/time', [App\Http\Controllers\MapPublicController::class, 'calculateTravelTime']);
+    Route::GET('/calculate/route', [App\Http\Controllers\MapPublicController::class, 'calculateAstar']);
 
 });

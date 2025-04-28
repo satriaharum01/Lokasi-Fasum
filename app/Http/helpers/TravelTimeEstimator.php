@@ -13,6 +13,54 @@ class TravelTimeEstimator
      * @param float $endLng Longitude titik akhir
      * @return float Estimasi waktu tempuh dalam menit
      */
+    public function nearestNeighborRoute(array $points, float $startLat, float $startLng): array
+    {
+        $currentLat = $startLat;
+        $currentLng = $startLng;
+
+        // Inisialisasi results dengan data awal semua (tetap utuh)
+        $results = [];
+        foreach ($points as $index => $point) {
+            $results[$index] = $point;
+            $results[$index]['jarak'] = 0; // default jarak 0
+        }
+
+        $finalRoute = [];
+        $visitedIndexes = [];
+
+        while (count($visitedIndexes) < count($points)) {
+            $nearestIndex = null;
+            $nearestDistance = null;
+
+            foreach ($results as $index => $point) {
+                if (in_array($index, $visitedIndexes)) {
+                    continue; // skip yang sudah dikunjungi
+                }
+
+                $distance = $this->haversineDistance($currentLat, $currentLng, $point['lat'], $point['lng']);
+
+                if ($nearestDistance === null || $distance < $nearestDistance) {
+                    $nearestDistance = $distance;
+                    $nearestIndex = $index;
+                }
+            }
+
+            if ($nearestIndex !== null) {
+                $results[$nearestIndex]['jarak'] = $nearestDistance; // update jarak dari titik sebelumnya
+                $finalRoute[] = $results[$nearestIndex];
+
+                // Update start ke titik terdekat
+                $currentLat = $results[$nearestIndex]['lat'];
+                $currentLng = $results[$nearestIndex]['lng'];
+
+                // Tandai sebagai sudah dikunjungi
+                $visitedIndexes[] = $nearestIndex;
+            }
+        }
+
+        return $finalRoute;
+    }
+
     public function estimateMotorTravelTime($startLat, $startLng, $endLat, $endLng)
     {
         // Hitung jarak menggunakan Haversine Formula

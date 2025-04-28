@@ -58,3 +58,57 @@
     position: absolute;
     top: 2.1rem;
 }
+
+/* Route Listed CSS */
+.route-list {
+    padding: 1rem;
+}
+
+.route-item {
+    margin-bottom: 1rem;
+}
+
+.route-title {
+    font-weight: bold;
+    font-size: 10pt;
+}
+
+.route-dots {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0.5rem 0 0.5rem 1.5rem;
+    line-height: 0.5rem;
+}
+
+.dot-1,
+.dot-2,
+.dot-3 {
+    width: 2px;
+    height: 2px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50%;
+    margin: 2px 0;
+    animation: blink 1s infinite;
+}
+
+/* Delay masing-masing dot */
+.dot-2 {
+    animation-delay: 0.2s;
+}
+
+.dot-3 {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}

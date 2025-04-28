@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import MapMarkers, { addMarker, initClickListener } from "../components/map/MapMarkers";
+import { estimateTravelTime } from "../components/map/EstimateDistance";
+import { estimateShortestPath } from "../components/map/EstimateDistinations";
 import withReactContent from 'sweetalert2-react-content';
 import Swal from 'sweetalert2';
 import Aside, { Lside } from '../layouts/components/Aside';
 import FilterDataAccordion from "../layouts/components/FilterDataAccordion";
 import ListDataAccordion from "../layouts/components/ListDataAccordion";
+import { RouteList } from "../components/map/RouteList";
 import api from "../api";
 
 // Fungsi untuk memuat Google Maps API
@@ -49,8 +52,11 @@ function PublicMap() {
     const [markers, setMarkers] = useState([]);
     const [activeJenis, setActiveJenis] = useState([]);
     const [activeData, setActiveData] = useState([]);
+    const [routeData, setRouteData] = useState([]);
     const [loadingJenis, setLoadingJenis] = useState(true); // Loading untuk jenisData
     const [loadingMarkers, setLoadingMarkers] = useState(true); // Loading untuk markers
+    const [loadingRoute, setLoadingRoute] = useState(true);
+    const [loadingEst, setLoadingEst] = useState(true);
     const [markerPin, setMarkerPin] = useState(null);
     const [startPosition, setStartPosition] = useState(null);
 
@@ -77,11 +83,17 @@ function PublicMap() {
             }));
 
         setActiveData(newActiveData); // Save ke state supaya bisa ubah checked
+        setLoadingEst(false);
+        setLoadingRoute(true);
     }, [activeJenis, markers]);
 
     // Menangani perubahan checkbox untuk Data Fasum
     const handleDataCheckChange = (updatedItems) => {
+        const aktifData = updatedItems
+            .filter(item => item.checked)
+        setRouteData(aktifData);
         setActiveData(updatedItems);
+        setLoadingRoute(true);
     };
 
     // Menangani perubahan checkbox FIlter Jenis
@@ -103,15 +115,61 @@ function PublicMap() {
 
     };
 
+    // Set jarak masing masing titik saat titik mulai dipilih
+    const handleSetStart = async (startLat, startLng) => {
+        const apiUrl = '/map/calculate/time';
+
+        try {
+            const updatedData = await estimateTravelTime(activeData, startLat, startLng, apiUrl);
+            setActiveData(updatedData);
+        } catch (error) {
+            console.error('Error updating distances:', error);
+        } finally {
+            setLoadingEst(false);
+        }
+    };
+
     // Tangani button titik Mulai
     const handleSelectStart = () => {
         if (!startPosition) {
             console.log('Belum ada posisi start');
             return;
         }
+        setLoadingEst(true);
+        setLoadingRoute(true);
+        handleSetStart(startPosition.lat, startPosition.lng);
         setHandleButtonRute(true);
     };
 
+    // Button Trigger
+    const handleSelectRoute = () => {
+        console.log(routeData);
+        if (routeData.length <= 0) {
+            console.log("Route Data Kosong !")
+            return;
+        }
+
+        handleSetRoute(startPosition.lat, startPosition.lng);
+    }
+
+    // Set Route Data ketika tombol peta di cek
+    const handleSetRoute = async (startLat, startLng) => {
+        const apiUrl = '/map/calculate/route';
+
+        try {
+            const updatedData = await estimateShortestPath(routeData, startLat, startLng, apiUrl);
+            
+            console.log('Updated data:',updatedData);
+            setRouteData(updatedData);
+        } catch (error) {
+            console.error('Error updating Path:', error);
+        } finally {
+            setLoadingRoute(false);
+            console.log('Route data:', routeData);
+        }
+    };
+
+    // Reff Function
     useEffect(() => {
         handleSelectStartRef.current = handleSelectStart;
     }, [handleSelectStart]);
@@ -241,19 +299,20 @@ function PublicMap() {
     return (
         <>
             <Aside handleButton={handleButton} setHandleButton={setHandleButton}>
-                {loadingJenis ? <div className="ml-4">Loading ... </div> : <FilterDataAccordion
+                {loadingJenis ? <div className="ml-4"><i className="fa fa-spinner fa-spin"></i> Loading ... </div> : <FilterDataAccordion
                     jenisData={jenisData}
                     onCheckboxChange={handleCheckboxChange}
                 />}
 
-            </Aside>
+                {!handleButtonRute && loadingRoute ? ' ' : <RouteList route={routeData} loadingRoute={loadingRoute}/>}
+        </Aside >
             <div>
                 <div id="map" ref={mapRef} style={{ width: "100%", height: "90vh" }}></div>
             </div>
-            <Lside handleButton={handleButton} handleButtonRute={handleButtonRute} setHandleButton={setHandleButtonRute}>
-                {loadingJenis ? <div className="ml-4">Loading ... </div> : <ListDataAccordion
+            <Lside handleButton={handleButton} handleButtonRute={handleButtonRute} setHandleButton={handleSelectRoute}>
+                {loadingJenis ? <div className="ml-4"><i className="fa fa-spinner fa-spin"></i> Loading ... </div> : <ListDataAccordion
                     data={activeData}
-                    onCheckboxChange={handleDataCheckChange}
+                    onCheckboxChange={handleDataCheckChange} loadingEst={loadingEst} setLoadingEst={setLoadingEst}
                 />}
             </Lside>
         </>

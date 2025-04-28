@@ -93,6 +93,8 @@ export function addMarker(data, setMarkers, map) {
     alamat: data.alamat,
     jarak: 0,
     waktu: 0,
+    lat: parseFloat(data.latitude),
+    lng: parseFloat(data.longitude),
   });
 
   marker.addListener('click', () => {

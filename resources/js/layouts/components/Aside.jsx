@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import MasterDataAccordion from './MasterDataAccordion';
 
@@ -21,7 +21,7 @@ const ButtonCloseCariDestinasi = ({ setHandle }) => {
 const ButtonCariRute = ({ setHandle }) => {
     return (
         <>
-            <button type="button" className="col-12 btn btn-dark" onClick={() => setHandle(true)}><i className="fa fa-search"></i> Buat Rute</button>
+            <button type="button" className="col-12 btn btn-dark" onClick={() => setHandle()}><i className="fa fa-search"></i> Buat Rute</button>
         </>
     );
 }
@@ -56,9 +56,11 @@ export function Lside({ children, handleButton, handleButtonRute, setHandleButto
                 <div className="w-auto align-items-baseline" id="sidenav-collapse-second">
 
                     <ul className="navbar-nav">
-                        <li className="nav-item px-0">
-                            {children}
-                        </li>
+                        {React.Children.map(children, (child, index) => (
+                            <li key={index} className="nav-item px-0 ">
+                                {child}
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </aside>
@@ -87,9 +89,11 @@ function Aside({ children, handleButton, setHandleButton }) {
                     <li className="nav-item px-0">
                         <MasterDataAccordion />
                     </li>
-                    <li className="nav-item px-0">
-                        {children}
-                    </li>
+                    {React.Children.map(children, (child, index) => (
+                        <li key={index} className="nav-item px-0 my-2">
+                            {child}
+                        </li>
+                    ))}
                 </ul>
             </div>
         </aside>

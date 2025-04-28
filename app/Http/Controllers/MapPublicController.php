@@ -42,37 +42,81 @@ class MapPublicController extends Controller
         return response()->json($data);
     }
 
-    public function calculateTravelTime()
+    public function calculateTravelTime(Request $request)
     {
-        $startLat = -6.200000; // Contoh: Jakarta
-        $startLng = 106.816666;
-        $endLat = -6.300000; // Contoh: ke arah selatan Jakarta
-        $endLng = 106.816666;
+        // Validasi input
+        $validated = $request->validate([
+            'start_lat' => 'required|numeric',
+            'start_lng' => 'required|numeric'
+        ]);
+
+        // Ambil inputan dari URL query
+        $startLat = $request->start_lat;
+        $startLng = $request->start_lng;
+        $endLats = $request->end_lat; // array
+        $endLngs = $request->end_lng; // array
 
         $travelTimeEstimator = new TravelTimeEstimator();
-        $result = $travelTimeEstimator->estimateMotorTravelTime($startLat, $startLng, $endLat, $endLng);
-        $estimatedTime = $result['estimated_time_minutes'];
-        $distanceKm = $result['distance_km'];
+        $results = [];
 
-        if ($distanceKm < 1) {
-            $distanceKm = '< 1 Km';
-        } elseif ($distanceKm > 1) {
-            $distanceKm = round($distanceKm, 1) . ' Km';
-        } else {
-            $distanceKm = round($distanceKm, 0).' Km';
+        foreach ($endLats as $index => $endLat) {
+            $endLng = $endLngs[$index] ?? null;
+
+            if ($endLng !== null) {
+                $algoritm = $travelTimeEstimator->estimateMotorTravelTime(
+                    $startLat,
+                    $startLng,
+                    $endLat,
+                    $endLng
+                );
+
+                $estimatedTime = $algoritm['estimated_time_minutes'];
+                $distanceKm = $algoritm['distance_km'];
+
+                if ($distanceKm < 1) {
+                    $distanceKm = '< 1 Km';
+                } elseif ($distanceKm > 1) {
+                    $distanceKm = round($distanceKm, 1) . ' Km';
+                } else {
+                    $distanceKm = round($distanceKm, 0).' Km';
+                }
+
+                if ($estimatedTime < 1) {
+                    $estimatedTime = '< 1 Menit';
+                } elseif ($estimatedTime > 59) {
+                    $estimatedTime = round($estimatedTime / 60, 1) . ' Jam';
+                } else {
+                    $estimatedTime = round($estimatedTime, 0).' Menit';
+                }
+
+                $results[] = [
+                    'distance_km' => $distanceKm,
+                    'estimated_time_minutes' => $estimatedTime
+                ];
+            }
         }
 
-        if ($estimatedTime < 1) {
-            $estimatedTime = '< 1 Menit';
-        } elseif ($estimatedTime > 59) {
-            $estimatedTime = round($estimatedTime / 60, 1) . ' Jam';
-        } else {
-            $estimatedTime = round($estimatedTime, 0).' Menit';
-        }
+        return response()->json($results);
+    }
 
-        return response()->json([
-            'distance_km' => $distanceKm,
-            'estimated_time_minutes' => $estimatedTime
+
+    public function calculateAstar(Request $request)
+    {
+        // Validasi input
+        $validated = $request->validate([
+            'start_lat' => 'required|numeric',
+            'start_lng' => 'required|numeric'
         ]);
+
+        // Ambil inputan dari URL query
+        $startLat = $request->start_lat;
+        $startLng = $request->start_lng;
+        $points = $request->points;
+
+        $travelTimeEstimator = new TravelTimeEstimator();
+        $results = $travelTimeEstimator->nearestNeighborRoute($points, $startLat, $startLng);
+
+
+        return response()->json($results);
     }
 }

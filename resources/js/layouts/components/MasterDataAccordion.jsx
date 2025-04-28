@@ -27,7 +27,7 @@ function MasterDataAccordion() {
     setIsOpen(!isOpen);
   };
 
-  if (loading) return <div className="ml-4">Loading...</div>;
+  if (loading) return <div className="ml-4"><i className="fa fa-spinner fa-spin"></i>  Loading...</div>;
   if (error) return <div className="ml-4">Error: {error}</div>;
 
   return (
