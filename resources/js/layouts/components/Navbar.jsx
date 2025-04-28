@@ -29,7 +29,7 @@ function Navbar({ isLoggedIn }) {
             <nav className="header__menu mobile-menu">
                 <ul>
                     <NavbarItem path="/" label="Peta" />
-                    <NavbarItem path="/home" label="Fasum" />
+                    <NavbarItem path="/fasum" label="Fasum" />
                     {isLoggedIn ? (
                         <>
                             <li className=''>

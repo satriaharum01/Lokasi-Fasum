@@ -82,7 +82,7 @@ class AdminFasumController extends Controller
             // Simpan nama file ke model
             $fasum->cover_image = $filename;
         }
-        
+
         $fasum->save();
 
         return response()->json([
@@ -99,20 +99,35 @@ class AdminFasumController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
+        $fasum = new Fasum();
 
         $fillAble = (new Fasum())->getFillable();
+        // Update field lainnya yang boleh diisi
+        $fasum->fill($request->only($fillAble));
 
-        // Handle file jika ada
-        if ($request->file('cover_image_preview')) {
-            $file = $request->file('cover_image_preview');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('img/fasum'), $filename);
-            $fillAble->cover_image =  $filename;
+        // Handle file cover_image jika ada
+        if ($request->file('cover_image')) {
+            $file = $request->file('cover_image');
+            $ext = $file->getClientOriginalExtension();
+
+            // Generate nama file
+            $filename = $request->nama . '.' . $ext;
+
+            // Hapus file lama jika ada
+            $this->image_destroy($filename); // Nama file lama
+
+            // Simpan file baru ke disk 'img_fasum'
+            $file->storeAs('/fasum', $filename, ['disk' => 'img_upload']);
+
+            // Simpan nama file ke model
+            $fasum->cover_image = $filename;
+        } else {
+            $fasum->cover_image =  'none.jpg';
         }
 
-        $result = Fasum::create($request->only($fillAble));
+        $fasum->save();
 
-        return response()->json(['message' => 'Data created successfully', 'result' => $result], 201);
+        return response()->json(['message' => 'Data created successfully', 'result' => $fasum], 201);
     }
 
     public function destroy($id)

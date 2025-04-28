@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import Preloader from '../components/Preloader';
-import Aside from './components/Aside';
 
 const PublicLayout = ({ isLoggedIn, setIsLoggedIn }) => {
   const [loading, setLoading] = useState(true);
@@ -27,7 +26,6 @@ const PublicLayout = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
     <>
       <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <Aside />
       {loading ? <Preloader /> : <Outlet />}
     </>
   );

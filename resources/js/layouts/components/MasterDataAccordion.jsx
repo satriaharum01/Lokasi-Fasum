@@ -27,8 +27,8 @@ function MasterDataAccordion() {
     setIsOpen(!isOpen);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="ml-4">Loading...</div>;
+  if (error) return <div className="ml-4">Error: {error}</div>;
 
   return (
     <div className="accordion col-12 mb-1">

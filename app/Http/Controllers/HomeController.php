@@ -78,4 +78,34 @@ class HomeController extends Controller
 
         return response()->json($counts);
     }
+
+    public function getFasumWithPaginate(Request $request)
+    {
+        $search = $request->query('search');
+        $page = $request->query('page', 1);
+
+        $query = Fasum::with('jenisTempat');
+
+        if ($search) {
+            $query->where('nama', 'like', "%$search%");
+        }
+
+        $data = $query->paginate(8); // load 8 per page
+
+        $data->getCollection()->transform(function ($fasum) {
+            return [
+                'id' => $fasum->id,
+                'nama' => $fasum->nama,
+                'alamat' => $fasum->alamat,
+                'cover_image' => $fasum->cover_image,
+                'latitude' => $fasum->lat,
+                'longitude' => $fasum->long,
+                'markerIcon' => '../../assets/static/' . $fasum->jenisTempat->icon,
+                'jenis' => $fasum->jenisTempat->jenis ?? 'Undefined'
+
+            ];
+        });
+
+        return response()->json($data);
+    }
 }

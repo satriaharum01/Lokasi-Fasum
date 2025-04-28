@@ -1,9 +1,60 @@
-@import "public/bootstrap.min.css"; 
+@import "public/bootstrap.min.css";
 @import "public/material-dashboard.css";
-@import "public/font-awesome.min.css"; 
-@import "public/elegant-icons.css"; 
-@import "public/plyr.css"; 
-@import "public/nice-select.css"; 
-@import "public/owl.carousel.min.css"; 
-@import "public/slicknav.min.css"; 
-@import "public/style.css"; 
+@import "public/font-awesome.min.css";
+@import "public/elegant-icons.css";
+@import "public/plyr.css";
+@import "public/nice-select.css";
+@import "public/owl.carousel.min.css";
+@import "public/slicknav.min.css";
+@import "public/style.css";
+
+/* User Custom CSS */
+.slide-in {
+    transform: translateX(100%);
+    /* Mulai dari kanan */
+    transition: transform 0.5s ease;
+    /* Durasi transisi 0.5 detik */
+}
+
+.slide-in.active {
+    transform: translateX(0);
+    /* Geser ke posisi normal */
+}
+
+.two-line-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* batas 2 baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.badge.ribbon {
+    background-color: #2AC11D;
+    border-radius: 0;
+    box-shadow: 5px 5px 9px rgb(0, 0, 0, .5);
+    right: -1rem;
+    letter-spacing: .075rem;
+    line-height: 2.1rem;
+    padding: 0 1rem 0 1.2rem;
+    position: absolute;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, .3);
+    text-transform: uppercase;
+    text-decoration: none;
+    top: 1.2rem;
+    z-index: 10;
+}
+
+.badge.ribbon:hover {
+    color: #c2ffbc;
+}
+
+.badge.ribbon::before {
+    border-top: 15px solid #747474;
+    border-right: 16px solid transparent;
+    content: '';
+    right: 0;
+    position: absolute;
+    top: 2.1rem;
+}

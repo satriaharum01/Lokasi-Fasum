@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 //GET ROUTER PUBLIC
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
+Route::get('/fasum', [App\Http\Controllers\HomeController::class, 'index'])->name('landing');
 
 Route::prefix('get')->name('get.')->group(function () {
     Route::GET('/jenis', [App\Http\Controllers\HomeController::class, 'getJenis']);
