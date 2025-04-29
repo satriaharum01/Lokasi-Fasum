@@ -15,10 +15,13 @@
     "dependencies": {
         "datatables.net-bs5": "^2.2.2",
         "datatables.net-react": "^1.0.0",
+        "feather-icons-react": "^0.8.1",
+        "jQuery": "^1.7.4",
         "react": "^19.1.0",
         "react-bootstrap": "^2.10.9",
         "react-dom": "^19.1.0",
         "react-router-dom": "^7.5.0",
-        "sweetalert2": "^11.17.2"
+        "sweetalert2": "^11.6.13",
+        "sweetalert2-react-content": "^5.1.0"
     }
 }

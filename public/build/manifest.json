@@ -1,13 +1,100 @@
 {
+  "public/assets/img/logo.png": {
+    "file": "assets/logo-7d59102b.png",
+    "src": "public/assets/img/logo.png"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-brands-400.ttf": {
+    "file": "assets/fa-brands-400-b1d1c1b0.ttf",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-brands-400.ttf"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-brands-400.woff2": {
+    "file": "assets/fa-brands-400-c61287c2.woff2",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-brands-400.woff2"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-regular-400.ttf": {
+    "file": "assets/fa-regular-400-d7b19fe2.ttf",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-regular-400.ttf"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-regular-400.woff2": {
+    "file": "assets/fa-regular-400-5da313b0.woff2",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-regular-400.woff2"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-solid-900.ttf": {
+    "file": "assets/fa-solid-900-e4f6a7e9.ttf",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-solid-900.ttf"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-solid-900.woff2": {
+    "file": "assets/fa-solid-900-8f06540f.woff2",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-solid-900.woff2"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-v4compatibility.ttf": {
+    "file": "assets/fa-v4compatibility-2ddb3b41.ttf",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-v4compatibility.ttf"
+  },
+  "resources/js/assets/font-awesome-free-6/webfonts/fa-v4compatibility.woff2": {
+    "file": "assets/fa-v4compatibility-f46715c9.woff2",
+    "src": "resources/js/assets/font-awesome-free-6/webfonts/fa-v4compatibility.woff2"
+  },
+  "resources/js/layouts/css/fonts/ElegantIcons.eot": {
+    "file": "assets/ElegantIcons-912b4fcc.eot",
+    "src": "resources/js/layouts/css/fonts/ElegantIcons.eot"
+  },
+  "resources/js/layouts/css/fonts/ElegantIcons.svg": {
+    "file": "assets/ElegantIcons-91f068a0.svg",
+    "src": "resources/js/layouts/css/fonts/ElegantIcons.svg"
+  },
+  "resources/js/layouts/css/fonts/ElegantIcons.ttf": {
+    "file": "assets/ElegantIcons-7be552fc.ttf",
+    "src": "resources/js/layouts/css/fonts/ElegantIcons.ttf"
+  },
+  "resources/js/layouts/css/fonts/ElegantIcons.woff": {
+    "file": "assets/ElegantIcons-be1825e5.woff",
+    "src": "resources/js/layouts/css/fonts/ElegantIcons.woff"
+  },
+  "resources/js/layouts/css/fonts/fontawesome-webfont.eot": {
+    "file": "assets/fontawesome-webfont-7bfcab6d.eot",
+    "src": "resources/js/layouts/css/fonts/fontawesome-webfont.eot"
+  },
+  "resources/js/layouts/css/fonts/fontawesome-webfont.svg": {
+    "file": "assets/fontawesome-webfont-ad615792.svg",
+    "src": "resources/js/layouts/css/fonts/fontawesome-webfont.svg"
+  },
+  "resources/js/layouts/css/fonts/fontawesome-webfont.ttf": {
+    "file": "assets/fontawesome-webfont-aa58f33f.ttf",
+    "src": "resources/js/layouts/css/fonts/fontawesome-webfont.ttf"
+  },
+  "resources/js/layouts/css/fonts/fontawesome-webfont.woff": {
+    "file": "assets/fontawesome-webfont-ba0c59de.woff",
+    "src": "resources/js/layouts/css/fonts/fontawesome-webfont.woff"
+  },
+  "resources/js/layouts/css/fonts/fontawesome-webfont.woff2": {
+    "file": "assets/fontawesome-webfont-2adefcbc.woff2",
+    "src": "resources/js/layouts/css/fonts/fontawesome-webfont.woff2"
+  },
+  "resources/js/layouts/css/public.css": {
+    "file": "assets/public-b143412a.css",
+    "src": "resources/js/layouts/css/public.css"
+  },
   "resources/js/main.css": {
-    "file": "assets/main-7e29f435.css",
+    "file": "assets/main-e1321cfc.css",
     "src": "resources/js/main.css"
   },
   "resources/js/main.jsx": {
-    "css": [
-      "assets/main-7e29f435.css"
+    "assets": [
+      "assets/logo-7d59102b.png",
+      "assets/fa-brands-400-c61287c2.woff2",
+      "assets/fa-brands-400-b1d1c1b0.ttf",
+      "assets/fa-regular-400-5da313b0.woff2",
+      "assets/fa-regular-400-d7b19fe2.ttf",
+      "assets/fa-solid-900-8f06540f.woff2",
+      "assets/fa-solid-900-e4f6a7e9.ttf",
+      "assets/fa-v4compatibility-f46715c9.woff2",
+      "assets/fa-v4compatibility-2ddb3b41.ttf"
     ],
-    "file": "assets/main-e6fa7b23.js",
+    "css": [
+      "assets/main-e1321cfc.css"
+    ],
+    "file": "assets/main-e3dd5c34.js",
     "isEntry": true,
     "src": "resources/js/main.jsx"
   }

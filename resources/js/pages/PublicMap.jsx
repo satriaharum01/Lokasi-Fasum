@@ -9,19 +9,26 @@ import FilterDataAccordion from "../layouts/components/FilterDataAccordion";
 import ListDataAccordion from "../layouts/components/ListDataAccordion";
 import { RouteList } from "../components/map/RouteList";
 import api from "../api";
-
 // Fungsi untuk memuat Google Maps API
 function loadGoogleMapsAPI() {
     return new Promise((resolve, reject) => {
+        if (window.google && window.google.maps) {
+            // Google Maps API sudah dimuat
+            resolve();
+            return;
+        }
+
         const script = document.createElement("script");
         script.src =
-            "https://maps.googleapis.com/maps/api/js?key=AIzaSyDo9HRRCCPaSc56lFFDzT2V0xOYPI8OA9U&callback=initMap&libraries=places&v=weekly&language=id&region=ID";
+            "https://maps.googleapis.com/maps/api/js?key=AIzaSyDo9HRRCCPaSc56lFFDzT2V0xOYPI8OA9U&libraries=places&v=weekly&language=id&region=ID";
         script.async = true;
+        script.defer = true;
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
     });
 }
+
 // Fungsi untuk menampilkan SweetAlert loading
 const callSwall = (loading) => {
     if (loading) {
@@ -158,8 +165,8 @@ function PublicMap() {
 
         try {
             const updatedData = await estimateShortestPath(routeData, startLat, startLng, apiUrl);
-            
-            console.log('Updated data:',updatedData);
+
+            console.log('Updated data:', updatedData);
             setRouteData(updatedData);
         } catch (error) {
             console.error('Error updating Path:', error);
@@ -257,7 +264,7 @@ function PublicMap() {
         const loadMap = async () => {
             try {
                 await loadGoogleMapsAPI();
-                window.initMap = initMap;
+                initMap();
             } catch (error) {
                 console.error("Error loading Google Maps API:", error);
             } finally {
@@ -284,7 +291,9 @@ function PublicMap() {
 
     // Memunculkan loading saat pemuatan peta
     useEffect(() => {
+
         callSwall(true);
+        if (!map) return;
         const timer = setTimeout(() => {
             setLoadingJenis(false);
             callSwall(false);
@@ -304,8 +313,8 @@ function PublicMap() {
                     onCheckboxChange={handleCheckboxChange}
                 />}
 
-                {!handleButtonRute && loadingRoute ? ' ' : <RouteList route={routeData} loadingRoute={loadingRoute}/>}
-        </Aside >
+                {!handleButtonRute && loadingRoute ? ' ' : <RouteList route={routeData} loadingRoute={loadingRoute} />}
+            </Aside >
             <div>
                 <div id="map" ref={mapRef} style={{ width: "100%", height: "90vh" }}></div>
             </div>

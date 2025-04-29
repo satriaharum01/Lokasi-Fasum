@@ -22,5 +22,7 @@
         @include('backend.footer')
       </div>
     </div>
+    
+    @include('backend.js')
   </body>
 </html>

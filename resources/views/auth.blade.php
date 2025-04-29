@@ -53,6 +53,7 @@
     <!-- Tabler Core -->
     <script src="<?= asset('assets/login/dist/js/tabler.min.js') ?>" defer></script>
     <script src="<?= asset('assets/login/dist/js/demo.min.js') ?>" defer></script>
+    
     <div class="overlay-bg"></div>
 </body>
 
