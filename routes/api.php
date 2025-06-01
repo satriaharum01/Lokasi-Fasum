@@ -27,6 +27,7 @@ Route::prefix('form-schema')->group(function () {
 
 Route::prefix('get')->name('get.')->group(function () {
     Route::GET('/jenis', [App\Http\Controllers\HomeController::class, 'getJenis']);
+    Route::GET('/dashboard-content', [App\Http\Controllers\HomeController::class, 'dashboardContent']);
     Route::GET('/fasum/paginate', [App\Http\Controllers\HomeController::class, 'getFasumWithPaginate']);
     Route::GET('/count/fasum', [App\Http\Controllers\HomeController::class, 'countTempatPerJenis']);
 });

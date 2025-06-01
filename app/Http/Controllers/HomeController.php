@@ -66,6 +66,36 @@ class HomeController extends Controller
         return response()->json($data);
     }
 
+    public function dashboardContent()
+    {
+        $data = array();
+
+        $jenisCount = Jenis::count();
+        $fasum = Fasum::count();
+        $fasumWithJenisCount = Fasum::select('jenis_id', DB::raw('count(*) as total'))
+        ->groupBy('jenis_id')
+        ->with('jenisTempat') // kalau kamu mau akses nama jenisnya
+        ->get();
+
+        $data['jenis'] = $jenisCount;
+        $data['fasum'] = $fasum;
+        foreach ($fasumWithJenisCount as $row) {
+            if ($row->jenisTempat->jenis == 'Lapangan') {
+                $data['lapangan'] = $row->total;
+            }
+            if ($row->jenisTempat->jenis == 'Taman') {
+                $data['taman'] = $row->total;
+            }
+            if ($row->jenisTempat->jenis == 'SPBU') {
+                $data['spbu'] = $row->total;
+            }
+            if ($row->jenisTempat->jenis == 'Rumah Sakit') {
+                $data['rumah_sakit'] = $row->total;
+            }
+        }
+
+        return response()->json($data);
+    }
     public function countTempatPerJenis()
     {
         $tempat = Fasum::with('jenisTempat')->get();
