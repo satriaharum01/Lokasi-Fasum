@@ -83,7 +83,7 @@ function Header({ isLoggedIn, setIsLoggedIn }) {
                                     </>
                                 ) : (
                                     <>
-                                        <span className="icon_profile" onClick={() => window.location.href = '/login'} style={{ cursor: 'pointer' }}></span>
+                                        <span className="icon_profile" onClick={() => window.location.href = '/account/login'} style={{ cursor: 'pointer' }}></span>
                                     </>
                                 )}
                             </div>

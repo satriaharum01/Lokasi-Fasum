@@ -11,7 +11,7 @@ const PrivateRoute = ({ isLoggedIn,setIsLoggedIn }) => {
                 const response = await api.get('/api/user');
                 setIsLoggedIn(true);
             } catch (error) {
-                window.location.href = "/login";
+                window.location.href = "/account/login";
                 console.log('Not authenticated');
             }
         };
