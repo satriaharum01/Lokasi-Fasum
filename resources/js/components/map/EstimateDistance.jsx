@@ -19,6 +19,7 @@ export async function estimateTravelTime(data, startLat, startLng, apiUrl) {
         lat: item.lat, // pastikan nama field lat/lng ada di item
         lng: item.lng,
         nama: item.tempat,
+        rating: item.rating,
     }));
 
     const params = {

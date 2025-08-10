@@ -95,6 +95,7 @@ const adminFasumForm = ({ title, subTitle, type }) => {
       data.append('alamat', formData.alamat);
       data.append('lat', formData.lat);
       data.append('long', formData.long);
+      data.append('rating', formData.rating);
       data.append('deskripsi', formData.deskripsi);
 
       if (formData.cover_image instanceof File) {

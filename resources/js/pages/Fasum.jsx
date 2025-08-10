@@ -22,6 +22,7 @@ function FasumCard({ data, index }) {
                     <a href={`https://maps.google.com/?q=${data.nama}`} target='_blank'>
                         <h3 className="card-title fw-bold" style={{ fontSize: "11pt" }}>{data.nama}</h3>
                     </a>
+                    <span><i class="fa fa-star text-warning mr-2"></i>{data.rating}</span>
                     <div className="card-text two-line-ellipsis" style={{ fontSize: "10pt" }}>
                         {data.alamat}
                     </div>

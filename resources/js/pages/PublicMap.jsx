@@ -1,13 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import MapMarkers, { addMarker, initClickListener } from "../components/map/MapMarkers";
+import MapMarkers, {
+    addMarker,
+    initClickListener,
+} from "../components/map/MapMarkers";
+import { getWaypoints } from "../utils/routeHelper";
 import { estimateTravelTime } from "../components/map/EstimateDistance";
 import { estimateShortestPath } from "../components/map/EstimateDistinations";
-import withReactContent from 'sweetalert2-react-content';
-import Swal from 'sweetalert2';
-import Aside, { Lside } from '../layouts/components/Aside';
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import Aside, { Lside } from "../layouts/components/Aside";
+import { Modal, Button } from "react-bootstrap";
 import FilterDataAccordion from "../layouts/components/FilterDataAccordion";
 import ListDataAccordion from "../layouts/components/ListDataAccordion";
-import { RouteList } from "../components/map/RouteList";
+import { RouteList, RouteListModal } from "../components/map/RouteList";
 import api from "../api";
 // Fungsi untuk memuat Google Maps API
 function loadGoogleMapsAPI() {
@@ -33,8 +38,8 @@ function loadGoogleMapsAPI() {
 const callSwall = (loading) => {
     if (loading) {
         Swal.fire({
-            title: 'Load Map...',
-            text: 'Please wait while loading your data.',
+            title: "Load Map...",
+            text: "Please wait while loading your data.",
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -43,22 +48,26 @@ const callSwall = (loading) => {
     } else {
         Swal.close();
         withReactContent(Swal).fire({
-            title: 'Map berhasil ditampilkan!',
-            text: '',
-            icon: 'success',
+            title: "Map berhasil ditampilkan!",
+            text: "",
+            icon: "success",
             timer: 1000,
         });
     }
-}
+};
 
 function PublicMap() {
     const mapRef = useRef(null);
-    const handleSelectStartRef = useRef(() => { });
+    const handleSelectStartRef = useRef(() => {});
     const [map, setDisplayMap] = useState(null);
+    const [directionsService, setDirectionsService] = useState(null);
+    const [directionsRenderer, setDirectionsRenderer] = useState(null);
+    const [polyline, setPolyline] = useState(null);
     const [jenisData, setJenisData] = useState([]);
     const [markers, setMarkers] = useState([]);
     const [activeJenis, setActiveJenis] = useState([]);
     const [activeData, setActiveData] = useState([]);
+    const [tempData, setTempData] = useState([]);
     const [routeData, setRouteData] = useState([]);
     const [loadingJenis, setLoadingJenis] = useState(true); // Loading untuk jenisData
     const [loadingMarkers, setLoadingMarkers] = useState(true); // Loading untuk markers
@@ -66,6 +75,8 @@ function PublicMap() {
     const [loadingEst, setLoadingEst] = useState(true);
     const [markerPin, setMarkerPin] = useState(null);
     const [startPosition, setStartPosition] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const directionPanelRef = useRef(null);
 
     //Aside Control
     const [handleButton, setHandleButton] = useState(false);
@@ -74,8 +85,8 @@ function PublicMap() {
 
     // Menampilkan marker berdasarkan activeJenis
     const filteredMarkers = markers
-        .filter(marker => activeJenis.includes(marker.jenis))
-        .map(data => ({
+        .filter((marker) => activeJenis.includes(marker.jenis))
+        .map((data) => ({
             ...data,
             checked: false, // Set default checked ke false
         }));
@@ -83,31 +94,32 @@ function PublicMap() {
     // Saat activeJenis berubah, update activeData dari markers
     useEffect(() => {
         const newActiveData = markers
-            .filter(marker => activeJenis.includes(marker.jenis))
-            .map(marker => ({
+            .filter((marker) => activeJenis.includes(marker.jenis))
+            .map((marker) => ({
                 ...marker,
                 checked: false, // Defaultnya
             }));
 
         setActiveData(newActiveData); // Save ke state supaya bisa ubah checked
+        setTempData(newActiveData);
         setLoadingEst(false);
         setLoadingRoute(true);
     }, [activeJenis, markers]);
 
     // Menangani perubahan checkbox untuk Data Fasum
     const handleDataCheckChange = (updatedItems) => {
-        const aktifData = updatedItems
-            .filter(item => item.checked)
+        const aktifData = updatedItems.filter((item) => item.checked);
         setRouteData(aktifData);
         setActiveData(updatedItems);
+        setTempData(updatedItems);
         setLoadingRoute(true);
     };
 
     // Menangani perubahan checkbox FIlter Jenis
     const handleCheckboxChange = (updatedItems) => {
         const aktifJenis = updatedItems
-            .filter(item => item.checked)
-            .map(item => item.jenis);
+            .filter((item) => item.checked)
+            .map((item) => item.jenis);
         setActiveJenis(aktifJenis); // Update kategori aktif
     };
 
@@ -119,18 +131,23 @@ function PublicMap() {
                 marker.setMap(null); // Menyembunyikan marker jika jenis tidak sesuai
             }
         });
-
     };
 
     // Set jarak masing masing titik saat titik mulai dipilih
     const handleSetStart = async (startLat, startLng) => {
-        const apiUrl = '/map/calculate/time';
+        const apiUrl = "/map/calculate/time";
 
         try {
-            const updatedData = await estimateTravelTime(activeData, startLat, startLng, apiUrl);
+            const updatedData = await estimateTravelTime(
+                activeData,
+                startLat,
+                startLng,
+                apiUrl,
+            );
             setActiveData(updatedData);
+            setTempData(updatedData);
         } catch (error) {
-            console.error('Error updating distances:', error);
+            console.error("Error updating distances:", error);
         } finally {
             setLoadingEst(false);
         }
@@ -139,7 +156,7 @@ function PublicMap() {
     // Tangani button titik Mulai
     const handleSelectStart = () => {
         if (!startPosition) {
-            console.log('Belum ada posisi start');
+            console.log("Belum ada posisi start");
             return;
         }
         setLoadingEst(true);
@@ -150,29 +167,34 @@ function PublicMap() {
 
     // Button Trigger
     const handleSelectRoute = () => {
-        console.log(routeData);
+        //console.log(routeData);
         if (routeData.length <= 0) {
-            console.log("Route Data Kosong !")
+            console.log("Route Data Kosong !");
             return;
         }
 
         handleSetRoute(startPosition.lat, startPosition.lng);
-    }
+    };
 
     // Set Route Data ketika tombol peta di cek
     const handleSetRoute = async (startLat, startLng) => {
-        const apiUrl = '/map/calculate/route';
+        const apiUrl = "/map/calculate/route";
 
         try {
-            const updatedData = await estimateShortestPath(routeData, startLat, startLng, apiUrl);
+            const updatedData = await estimateShortestPath(
+                routeData,
+                startLat,
+                startLng,
+                apiUrl,
+            );
 
-            console.log('Updated data:', updatedData);
+            //console.log("Updated data:", updatedData);
             setRouteData(updatedData);
         } catch (error) {
-            console.error('Error updating Path:', error);
+            console.error("Error updating Path:", error);
         } finally {
             setLoadingRoute(false);
-            console.log('Route data:', routeData);
+            console.log("Route data:", routeData);
         }
     };
 
@@ -184,14 +206,14 @@ function PublicMap() {
     useEffect(() => {
         const fetchJenisData = async () => {
             try {
-                const response = await api.get('/get/jenis');
+                const response = await api.get("/get/jenis");
                 const updatedJenisData = response.data.map((data) => ({
                     ...data,
                     checked: true, // Set default checked ke true
                 }));
                 setJenisData(updatedJenisData);
 
-                const allJenis = updatedJenisData.map(data => data.jenis);
+                const allJenis = updatedJenisData.map((data) => data.jenis);
                 setActiveJenis(allJenis);
             } catch (err) {
                 console.error("Error fetching jenis data:", err);
@@ -206,8 +228,8 @@ function PublicMap() {
     // Mengambil data marker dari API
     const getDataMarkers = () => {
         Swal.fire({
-            title: 'Load Markers...',
-            text: 'Please wait while loading your data.',
+            title: "Load Markers...",
+            text: "Please wait while loading your data.",
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -215,28 +237,26 @@ function PublicMap() {
         });
         const timer = setTimeout(async () => {
             try {
-                const response = await api.get('/map/get/fasum');
+                const response = await api.get("/map/get/fasum");
                 setMarkers([]);
                 response.data.forEach((data) => {
                     addMarker(data, setMarkers, map);
                 });
             } catch (error) {
-                console.error('Error fetching markers:', error);
+                console.error("Error fetching markers:", error);
             } finally {
                 setLoadingMarkers(false);
                 Swal.close();
                 withReactContent(Swal).fire({
-                    title: 'Markers berhasil ditampilkan!',
-                    text: '',
-                    icon: 'success',
+                    title: "Markers berhasil ditampilkan!",
+                    text: "",
+                    icon: "success",
                     timer: 1000,
                 });
             }
         }, 3000); // Waktu loading bisa disesuaikan
 
         return () => clearTimeout(timer);
-
-
     };
     // Memanggil fungsi untuk menyembunyikan marker berdasarkan kategori aktif
     useEffect(() => {
@@ -250,13 +270,24 @@ function PublicMap() {
         const mapInstance = new google.maps.Map(mapRef.current, {
             center: {
                 lat: parseFloat(import.meta.env.VITE_DEFAULT_LAT) || -6.1751,
-                lng: parseFloat(import.meta.env.VITE_DEFAULT_LNG) || 106.8650,
+                lng: parseFloat(import.meta.env.VITE_DEFAULT_LNG) || 106.865,
             },
             mapTypeControl: false,
             zoom: parseInt(import.meta.env.VITE_DEFAULT_ZOOM) || 10,
         });
 
+        const renderer = new window.google.maps.DirectionsRenderer({
+            suppressMarkers: false, // jika mau marker default
+            preserveViewport: false,
+        });
+
+        const directionsServiceInstance = new google.maps.DirectionsService();
+
+        renderer.setMap(mapInstance);
+
         setDisplayMap(mapInstance);
+        setDirectionsService(directionsServiceInstance);
+        setDirectionsRenderer(renderer);
     };
 
     // Memuat Google Maps API dan menunggu sampai selesai
@@ -268,7 +299,6 @@ function PublicMap() {
             } catch (error) {
                 console.error("Error loading Google Maps API:", error);
             } finally {
-
             }
         };
 
@@ -286,12 +316,12 @@ function PublicMap() {
                 lng: position.lng(),
             });
             setHandleButtonRute(false);
+            setLoadingRoute(true);
         }
     }, [markerPin]);
 
     // Memunculkan loading saat pemuatan peta
     useEffect(() => {
-
         callSwall(true);
         if (!map) return;
         const timer = setTimeout(() => {
@@ -305,25 +335,124 @@ function PublicMap() {
         return () => clearTimeout(timer);
     }, [map]);
 
+    const showRouteModal = () => {
+        // You can add your modal logic here
+        setModalOpen(true);
+        createDirection(
+            startPosition.lat,
+            startPosition.lng,
+            routeData,
+            directionsRenderer,
+            directionPanelRef,
+        );
+    };
+
+    const createDirection = (
+        startLat,
+        endLng,
+        routeDataList,
+        directionsRenderer,
+        directionPanelRef,
+    ) => {
+        const startPoint = { lat: startLat, lng: endLng };
+        const { endPoint, waypoints } = getWaypoints(routeDataList);
+
+        console.log(routeDataList.length);
+        const request = {
+            origin: startPoint,
+            destination: {
+                lat: parseFloat(endPoint.lat),
+                lng: parseFloat(endPoint.lng),
+            },
+            waypoints: waypoints,
+            travelMode: window.google.maps.TravelMode.DRIVING,
+            optimizeWaypoints: true, // reorder waypoints for best route
+        };
+
+        directionsService.route(request, (response, status) => {
+            if (status === window.google.maps.DirectionsStatus.OK) {
+                directionsRenderer.setDirections(response);
+                directionsRenderer.setPanel(directionPanelRef.current);
+            } else {
+                console.log("Problem in showing direction due to " + status);
+            }
+        });
+    };
     return (
         <>
-            <Aside handleButton={handleButton} setHandleButton={setHandleButton}>
-                {loadingJenis ? <div className="ml-4"><i className="fa fa-spinner fa-spin"></i> Loading ... </div> : <FilterDataAccordion
-                    jenisData={jenisData}
-                    onCheckboxChange={handleCheckboxChange}
-                />}
+            <Aside
+                handleButton={handleButton}
+                setHandleButton={setHandleButton}
+            >
+                {loadingJenis ? (
+                    <div className="ml-4">
+                        <i className="fa fa-spinner fa-spin"></i> Loading
+                        ...{" "}
+                    </div>
+                ) : (
+                    <FilterDataAccordion
+                        jenisData={jenisData}
+                        onCheckboxChange={handleCheckboxChange}
+                    />
+                )}
 
-                {!handleButtonRute && loadingRoute ? ' ' : <RouteList route={routeData} loadingRoute={loadingRoute} />}
-            </Aside >
+                {/* !handleButtonRute && loadingRoute ? ' ' : <RouteList route={routeData} loadingRoute={loadingRoute} /> */}
+                {!handleButtonRute && loadingRoute ? (
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className="col-12 btn btn-danger"
+                            onClick={initMap}
+                        >
+                            <i className="fa fa-refresh"></i> Reset Map
+                        </button>
+                    </li>
+                ) : (
+                    <li className="nav-item">
+                        <button
+                            type="button"
+                            className="col-12 btn btn-success"
+                            onClick={showRouteModal}
+                        >
+                            <i className="fa fa-eye"></i> Show Route
+                        </button>
+                    </li>
+                )}
+            </Aside>
             <div>
-                <div id="map" ref={mapRef} style={{ width: "100%", height: "90vh" }}></div>
+                <div
+                    id="map"
+                    ref={mapRef}
+                    style={{ width: "100%", height: "90vh" }}
+                ></div>
             </div>
-            <Lside handleButton={handleButton} handleButtonRute={handleButtonRute} setHandleButton={handleSelectRoute}>
-                {loadingJenis ? <div className="ml-4"><i className="fa fa-spinner fa-spin"></i> Loading ... </div> : <ListDataAccordion
-                    data={activeData}
-                    onCheckboxChange={handleDataCheckChange} loadingEst={loadingEst} setLoadingEst={setLoadingEst}
-                />}
+            <Lside
+                handleButton={handleButton}
+                handleButtonRute={handleButtonRute}
+                setHandleButton={handleSelectRoute}
+            >
+                {loadingJenis ? (
+                    <div className="ml-4">
+                        <i className="fa fa-spinner fa-spin"></i> Loading
+                        ...{" "}
+                    </div>
+                ) : (
+                    <ListDataAccordion
+                        data={activeData}
+                        setData={setActiveData}
+                        originData={tempData}
+                        onCheckboxChange={handleDataCheckChange}
+                        loadingEst={loadingEst}
+                        setLoadingEst={setLoadingEst}
+                    />
+                )}
             </Lside>
+            <RouteListModal
+                show={modalOpen}
+                onClose={() => setModalOpen(false)}
+                directionPanelRef={directionPanelRef}
+                loadingRoute={loadingRoute}
+            />
         </>
     );
 }

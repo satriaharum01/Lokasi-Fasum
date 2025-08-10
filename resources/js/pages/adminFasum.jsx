@@ -100,6 +100,12 @@ const adminFasum = ({ subTitle, title }) => {
       data: 'long'
     },
     {
+      data: 'rating',
+      render: function (data) {
+        return '<span><i class="fa fa-star text-warning mr-2"></i>'+data+'</span>';
+      }
+    },
+    {
       data: 'id',
       render: function (data) {
         return '<button class="btn btn-success btn-edit" data-id="' + data + '" > <i class="fa fa-edit"></i></button>\
@@ -137,6 +143,7 @@ const adminFasum = ({ subTitle, title }) => {
                         <th rowSpan={2} className="text-primary text-center align-content-around" width="20%">Fasilitas Umum</th>
                         <th rowSpan={2} className="text-primary text-center align-content-around">Alamat</th>
                         <th colSpan={2} className="text-primary text-center align-content-around">Cordinate</th>
+                        <th rowSpan={2} className="text-primary text-center align-content-around">Rating</th>
                         <th rowSpan={2} className="text-primary text-center align-content-around">Action</th>
                       </tr>
                       <tr>

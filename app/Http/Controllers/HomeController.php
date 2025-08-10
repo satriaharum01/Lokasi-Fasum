@@ -130,6 +130,7 @@ class HomeController extends Controller
                 'cover_image' => $fasum->cover_image,
                 'latitude' => $fasum->lat,
                 'longitude' => $fasum->long,
+                'rating' => $fasum->rating,
                 'markerIcon' => '../../assets/static/' . $fasum->jenisTempat->icon,
                 'jenis' => $fasum->jenisTempat->jenis ?? 'Undefined'
 

@@ -93,6 +93,7 @@ export function addMarker(data, setMarkers, map) {
     alamat: data.alamat,
     jarak: 0,
     waktu: 0,
+    rating: data.rating,
     lat: parseFloat(data.latitude),
     lng: parseFloat(data.longitude),
   });

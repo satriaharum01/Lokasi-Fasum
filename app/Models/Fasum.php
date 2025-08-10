@@ -11,13 +11,14 @@ class Fasum extends Model
     use HasFactory;
     protected $table = 'fasilitas_umum';
     protected $primaryKey = 'id';
-    protected $fillable = ['nama','alamat','lat','long','cover_image','deskripsi','jenis_id'];
+    protected $fillable = ['nama','alamat','lat','long','cover_image','deskripsi','rating','jenis_id'];
     protected $inputType = [
         'jenis_id' => 'select',
         'nama' => 'text',
         'alamat' => 'text',
         'lat' => 'text',
         'long' => 'text',
+        'rating' => 'text',
         'cover_image' => 'file',
         'deskripsi' => 'textearea',
     ];
@@ -29,6 +30,7 @@ class Fasum extends Model
             'alamat'       => 'required|string|max:255',
             'lat'          => 'required|numeric|between:-90,90',
             'long'         => 'required|numeric|between:-180,180',
+            'rating'         => 'required|numeric|between:0,5',
             'deskripsi'    => 'required|string'
         ]);
     }
